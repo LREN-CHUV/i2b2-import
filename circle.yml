@@ -12,5 +12,6 @@ test:
     - pip install psycopg2
     - pip install airflow
     - pip install sqlalchemy
+    - pip install pandas
   override:
     - cd ./tests && ./test.sh
