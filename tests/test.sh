@@ -12,7 +12,8 @@ fi
 
 # Run unit tests
 echo "Running unit tests..."
-ret="$(nosetests unittest.py)"
+nosetests unittest.py
+ret=$?
 
 # Remove DB container (if not on CircleCI)
 if [ -z "$CIRCLECI" ] || [ "$CIRCLECI" = false ] ; then
@@ -21,4 +22,4 @@ if [ -z "$CIRCLECI" ] || [ "$CIRCLECI" = false ] ; then
     docker rm -f ${db_docker_id}
 fi
 
-exit ${ret}
+exit "$ret"
