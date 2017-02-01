@@ -31,9 +31,6 @@ class TestPublicFunctions:
     def teardown(self):
         self.i2b2_db_conn.close()
 
-    def test_csv2db(self):
+    def test_01_csv2db(self):
         observation_fact_import.csv2db('./data/features/adni.csv', self.i2b2_db_conn, 'TEST')
-        assert_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 44)
-
-    # def test_ppmi_import(self):
-    # PPMIMetaImport.meta2i2b2('./data/xml/ppmi.xml', self.i2b2_db_conn)
+        assert_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 6)
