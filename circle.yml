@@ -1,0 +1,16 @@
+machine:
+  python:
+    version: 3.5.2
+  services:
+    - docker
+dependencies:
+  override:
+    - docker info
+test:
+  pre:
+    - pip install alembic
+    - pip install psycopg2
+    - pip install airflow
+    - pip install sqlalchemy
+  override:
+    - cd ./tests && ./test.sh
