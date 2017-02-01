@@ -1,6 +1,6 @@
 from i2b2_import.meta_import import MetaImport
 import logging
-from xml.etree import ElementTree
+from defusedxml.ElementTree import parse
 
 
 class PPMIMetaImport(MetaImport):
@@ -16,6 +16,6 @@ class PPMIMetaImport(MetaImport):
         :param db_conn: Connection to the I2B2 DB.
         :return:
         """
-        root = ElementTree.parse(source).getroot()
+        root = parse(source).getroot()
         for project_id in root.findall('projectIdentifier'):
             logging.info(project_id)
