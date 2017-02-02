@@ -28,10 +28,11 @@ def csv2db(file_path, db_conn, src):
     patient_ide_source = src
     encounter_ide_source = src
     project_id = src
-    data = DataFrame.from_csv(file_path, index_col=None)
-    column_headers = list(data)
+    df = DataFrame.from_csv(file_path, index_col=None)
+    column_headers = list(df)
     concept_columns = set(column_headers) - set(DIM_COLUMNS)
-    for index, row in data.iterrows():
+    for row in df.iterrows():
+        row = row[1]  # (index, row) -> row
         patient_ide = str(row[PATIENT_NUM_COL])
         encounter_ide = str(row[ENCOUNTER_NUM_COL])
         provider_id = str(row[PROVIDER_ID_COL])
