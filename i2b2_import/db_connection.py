@@ -42,3 +42,27 @@ class Connection:
             return self.db_session.query(sql_func.max(self.EncounterMapping.encounter_num).label('max')).one().max + 1
         except TypeError:
             return 0
+
+    def get_patient_num(self, patient_ide, patient_ide_source, project_id):
+        patient_ide = str(patient_ide)
+        patient = self.db_session.query(self.PatientMapping).filter_by(
+            patient_ide_source=patient_ide_source, patient_ide=patient_ide, project_id=project_id).first()
+        if not patient:
+            patient = self.PatientMapping(patient_ide_source=patient_ide_source, patient_ide=patient_ide,
+                                          project_id=project_id, patient_num=self.new_patient_num())
+            self.db_session.add(patient)
+            self.db_session.commit()
+        return patient.patient_num
+
+    def get_encounter_num(self, encounter_ide, encounter_ide_source, project_id, patient_ide, patient_ide_source):
+        encounter_ide = str(encounter_ide)
+        visit = self.db_session.query(self.EncounterMapping).filter_by(
+            encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide, project_id=project_id,
+            patient_ide=patient_ide, patient_ide_source=patient_ide_source).first()
+        if not visit:
+            visit = self.EncounterMapping(encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide,
+                                          project_id=project_id, patient_ide=patient_ide,
+                                          patient_ide_source=patient_ide_source, encounter_num=self.new_encounter_num())
+            self.db_session.add(visit)
+            self.db_session.commit()
+        return visit.encounter_num

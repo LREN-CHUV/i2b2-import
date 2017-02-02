@@ -1,10 +1,15 @@
 import datetime
-import logging
-from i2b2_import.meta_import import MetaImport
 from defusedxml import ElementTree
+from math import floor
+
+from i2b2_import.meta_import import MetaImport
 
 
 DEFAULT_DATE = datetime.datetime(1, 1, 1)
+YEARS_PER_MONTH = 0.0833334
+YEARS_PER_WEEK = 0.0191781
+YEARS_PER_DAY = 0.00273973
+SOURCE_POSTFIX = "_XML"
 
 
 ########################################################################################################################
@@ -25,26 +30,31 @@ class PPMIMetaImport(MetaImport):
         :return:
         """
         tree = ElementTree.parse(source)
-        project_id = tree.find('./project/projectIdentifier')
-        project_descr = tree.find('./project/projectDescription')
-        site = tree.find('./project/siteKey')
-        subject_id = tree.find('./project/subject/subjectIdentifier')
-        subject_sex = tree.find('./project/subject/subjectSex')
-        visit_type = tree.find('./project/subject/visit/visitIdentifier')
-        study_id = tree.find('./project/subject/study/studyIdentifier')
-        subject_age = tree.find('./project/subject/study/subjectAge')
-        age_qualifier = tree.find('./project/subject/study/ageQualifier')
+        project_id = tree.find('./project/projectIdentifier').text
+        ide_source = project_id + SOURCE_POSTFIX
+        project_descr = tree.find('./project/projectDescription').text
+        site = tree.find('./project/siteKey').text
+        subject_id = tree.find('./project/subject/subjectIdentifier').text
+        subject_sex = tree.find('./project/subject/subjectSex').text
+        visit_type = tree.find('./project/subject/visit/visitIdentifier').text
+        study_id = tree.find('./project/subject/study/studyIdentifier').text
+        subject_age = tree.find('./project/subject/study/subjectAge').text
+        age_qualifier = tree.find('./project/subject/study/ageQualifier').text
         subject_age_years = _compute_age_years(subject_age, age_qualifier)
-        post_mortem = tree.find('./project/subject/study/postMortem')
-        series_id = tree.find('./project/subject/study/series/seriesIdentifier')
+        subject_age_years = int(floor(subject_age_years)) + 1  # I2B2 uses an integer value for age
+        post_mortem = tree.find('./project/subject/study/postMortem').text
+        series_id = tree.find('./project/subject/study/series/seriesIdentifier').text
         try:
             acquisition_date = datetime.datetime.strptime(
-                tree.find('./project/subject/study/series/dateAcquired'), '%Y-%m-%d %H:%M:%S.%f')
+                tree.find('./project/subject/study/series/dateAcquired').text, '%Y-%m-%d %H:%M:%S.%f')
         except TypeError:
             acquisition_date = DEFAULT_DATE
-        image_uid = tree.find('./project/subject/study/series/imagingProtocol/imageUID')
-        image_descr = tree.find('./project/subject/study/series/imagingProtocol/description')
-        protocol = tree.findall('./project/subject/study/series/imagingProtocol/protocolTerm/protocol')
+        image_uid = tree.find('./project/subject/study/series/imagingProtocol/imageUID').text
+        image_descr = tree.find('./project/subject/study/series/imagingProtocol/description').text
+        protocol = tree.findall('./project/subject/study/series/imagingProtocol/protocolTerm/protocol')[0].text
+
+        patient_num = db_conn.get_patient_num(subject_id, ide_source, project_id)
+        _save_patient(db_conn, patient_num, subject_sex, subject_age_years)
 
 
 ########################################################################################################################
@@ -52,13 +62,30 @@ class PPMIMetaImport(MetaImport):
 ########################################################################################################################
 
 def _compute_age_years(subject_age, age_qualifier):
+    subject_age = float(subject_age)
     if 'Y' == str(age_qualifier).upper():
         return subject_age
     elif 'M' == str(age_qualifier).upper():
-        return 0.0833334 * subject_age
+        return YEARS_PER_MONTH * subject_age
     elif 'W' == str(age_qualifier).upper():
-        return 0.0191781 * subject_age
+        return YEARS_PER_WEEK * subject_age
     elif 'D' == str(age_qualifier).upper():
-        return 0.00273973 * subject_age
+        return YEARS_PER_DAY * subject_age
     else:
         return None
+
+
+def _save_patient(db_conn, patient_num, sex_cd, age_in_years_num):
+    patient = db_conn.db_session.query(db_conn.PatientDimension) \
+        .filter_by(patient_num=patient_num) \
+        .first()
+    if not patient:
+        patient = db_conn.PatientDimension(
+            patient_num=patient_num, sex_cd=sex_cd, age_in_years_num=age_in_years_num
+        )
+        db_conn.db_session.add(patient)
+        db_conn.db_session.commit()
+    else:
+        patient.sex_cd = sex_cd
+        patient.age_in_years_num = age_in_years_num
+        db_conn.db_session.commit()

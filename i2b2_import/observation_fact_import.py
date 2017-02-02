@@ -46,9 +46,9 @@ def csv2db(file_path, db_conn, src):
             else:
                 tval_char = val
                 nval_num = None
-            patient_num = _get_patient_num(db_conn, patient_ide, patient_ide_source, project_id)
-            encounter_num = _get_encounter_num(db_conn, encounter_ide, encounter_ide_source, project_id, patient_ide,
-                                               patient_ide_source)
+            patient_num = db_conn.get_patient_num(patient_ide, patient_ide_source, project_id)
+            encounter_num = db_conn.get_encounter_num(encounter_ide, encounter_ide_source, project_id,
+                                                      patient_ide, patient_ide_source)
             _save_observation(db_conn, encounter_num, concept_cd, provider_id, start_date, patient_num,
                               valtype_cd, tval_char, nval_num)
 
@@ -56,32 +56,6 @@ def csv2db(file_path, db_conn, src):
 ########################################################################################################################
 # PRIVATE FUNCTIONS
 ########################################################################################################################
-
-def _get_patient_num(db_conn, patient_ide, patient_ide_source, project_id):
-    patient_ide = str(patient_ide)
-    patient = db_conn.db_session.query(db_conn.PatientMapping).filter_by(
-        patient_ide_source=patient_ide_source, patient_ide=patient_ide, project_id=project_id).first()
-    if not patient:
-        patient = db_conn.PatientMapping(patient_ide_source=patient_ide_source, patient_ide=patient_ide,
-                                         project_id=project_id, patient_num=db_conn.new_patient_num())
-        db_conn.db_session.add(patient)
-        db_conn.db_session.commit()
-    return patient.patient_num
-
-
-def _get_encounter_num(db_conn, encounter_ide, encounter_ide_source, project_id, patient_ide, patient_ide_source):
-    encounter_ide = str(encounter_ide)
-    visit = db_conn.db_session.query(db_conn.EncounterMapping).filter_by(
-        encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide, project_id=project_id,
-        patient_ide=patient_ide, patient_ide_source=patient_ide_source).first()
-    if not visit:
-        visit = db_conn.EncounterMapping(encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide,
-                                         project_id=project_id, patient_ide=patient_ide,
-                                         patient_ide_source=patient_ide_source,
-                                         encounter_num=db_conn.new_encounter_num())
-        db_conn.db_session.add(visit)
-        db_conn.db_session.commit()
-    return visit.encounter_num
 
 
 def _eu_date_to_datime(d):
