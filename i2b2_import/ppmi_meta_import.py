@@ -9,7 +9,6 @@ DEFAULT_DATE = datetime.datetime(1, 1, 1)
 YEARS_PER_MONTH = 0.0833334
 YEARS_PER_WEEK = 0.0191781
 YEARS_PER_DAY = 0.00273973
-SOURCE_POSTFIX = "_XML"
 
 
 ########################################################################################################################
@@ -31,13 +30,14 @@ class PPMIMetaImport(MetaImport):
         """
         tree = ElementTree.parse(source)
         project_id = tree.find('./project/projectIdentifier').text
-        ide_source = project_id + SOURCE_POSTFIX
+        ide_source = project_id
         project_descr = tree.find('./project/projectDescription').text
         site = tree.find('./project/siteKey').text
         subject_id = tree.find('./project/subject/subjectIdentifier').text
         subject_sex = tree.find('./project/subject/subjectSex').text
         visit_type = tree.find('./project/subject/visit/visitIdentifier').text
         study_id = tree.find('./project/subject/study/studyIdentifier').text
+        study_id = 'S' + study_id  # In PPMI the ID from DICOM is prefixed by an 'S'
         subject_age = tree.find('./project/subject/study/subjectAge').text
         age_qualifier = tree.find('./project/subject/study/ageQualifier').text
         subject_age_years = _compute_age_years(subject_age, age_qualifier)
@@ -55,6 +55,9 @@ class PPMIMetaImport(MetaImport):
 
         patient_num = db_conn.get_patient_num(subject_id, ide_source, project_id)
         _save_patient(db_conn, patient_num, subject_sex, subject_age_years)
+
+        encounter_num = db_conn.get_encounter_num(study_id, ide_source, project_id, subject_id, ide_source)
+        _save_visit(db_conn, encounter_num, patient_num, acquisition_date)
 
 
 ########################################################################################################################
@@ -88,4 +91,19 @@ def _save_patient(db_conn, patient_num, sex_cd, age_in_years_num):
     else:
         patient.sex_cd = sex_cd
         patient.age_in_years_num = age_in_years_num
+        db_conn.db_session.commit()
+
+
+def _save_visit(db_conn, encounter_num, patient_num, start_date):
+    visit = db_conn.db_session.query(db_conn.VisitDimension) \
+        .filter_by(encounter_num=encounter_num, patient_num=patient_num) \
+        .first()
+    if not visit:
+        visit = db_conn.VisitDimension(
+            encounter_num=encounter_num, patient_num=patient_num, start_date=start_date
+        )
+        db_conn.db_session.add(visit)
+        db_conn.db_session.commit()
+    else:
+        visit.start_date = start_date
         db_conn.db_session.commit()

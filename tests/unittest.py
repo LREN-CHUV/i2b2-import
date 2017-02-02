@@ -32,7 +32,7 @@ class TestPublicFunctions:
         self.i2b2_db_conn.close()
 
     def test_01_csv2db(self):
-        observation_fact_import.csv2db('./data/features/adni.csv', self.i2b2_db_conn, 'TEST')
+        observation_fact_import.csv2db('./data/features/adni.csv', self.i2b2_db_conn, 'PPMI')
         assert_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 12)
 
     def test_02_xml2db(self):
