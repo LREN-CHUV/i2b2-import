@@ -17,5 +17,6 @@ test:
     - pip install airflow
     - pip install sqlalchemy
     - pip install pandas
+    - pip install defusedxml
   override:
     - cd ./tests && ./test.sh
