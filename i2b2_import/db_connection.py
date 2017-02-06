@@ -3,6 +3,8 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import orm
 from sqlalchemy.sql import functions as sql_func
 
+from datetime import datetime
+
 from airflow import configuration
 
 
@@ -66,3 +68,63 @@ class Connection:
             self.db_session.add(visit)
             self.db_session.commit()
         return visit.encounter_num
+
+    def save_observation(self, encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd, tval_char,
+                         nval_num):
+        observation = self.db_session.query(self.ObservationFact) \
+            .filter_by(encounter_num=encounter_num, concept_cd=concept_cd, provider_id=provider_id,
+                       start_date=start_date,
+                       patient_num=patient_num) \
+            .first()
+        if not observation:
+            observation = self.ObservationFact(
+                encounter_num=encounter_num, concept_cd=concept_cd, provider_id=provider_id, start_date=start_date,
+                patient_num=patient_num, valtype_cd=valtype_cd,
+                tval_char=tval_char, nval_num=nval_num, import_date=datetime.now()
+            )
+            self.db_session.add(observation)
+            self.db_session.commit()
+
+    def save_patient(self, patient_num, sex_cd, age_in_years_num):
+        patient = self.db_session.query(self.PatientDimension) \
+            .filter_by(patient_num=patient_num) \
+            .first()
+        if not patient:
+            patient = self.PatientDimension(
+                patient_num=patient_num, sex_cd=sex_cd, age_in_years_num=age_in_years_num
+            )
+            self.db_session.add(patient)
+            self.db_session.commit()
+        else:
+            patient.sex_cd = sex_cd
+            patient.age_in_years_num = age_in_years_num
+            self.db_session.commit()
+
+    def save_visit(self, encounter_num, patient_num, start_date):
+        visit = self.db_session.query(self.VisitDimension) \
+            .filter_by(encounter_num=encounter_num, patient_num=patient_num) \
+            .first()
+        if not visit:
+            visit = self.VisitDimension(
+                encounter_num=encounter_num, patient_num=patient_num, start_date=start_date
+            )
+            self.db_session.add(visit)
+            self.db_session.commit()
+        else:
+            visit.start_date = start_date
+            self.db_session.commit()
+
+    def save_concept(self, concept_path, concept_cd):
+        concept = self.db_session.query(self.ConceptDimension) \
+            .filter_by(concept_path=concept_path) \
+            .first()
+        if not concept:
+            concept = self.ConceptDimension(
+                concept_path=concept_path, concept_cd=concept_cd
+            )
+            self.db_session.add(concept)
+            self.db_session.commit()
+        elif concept_cd != concept.concept_cd:
+            concept.concept_cd = concept_cd
+            concept.update_date = datetime.now()
+            self.db_session.commit()
