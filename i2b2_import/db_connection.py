@@ -95,13 +95,14 @@ class Connection:
                 observation.nval_num = nval_num
                 observation.update_date = datetime.now()
 
-    def save_patient(self, patient_num, sex_cd, age_in_years_num):
+    def save_patient(self, patient_num, sex_cd=None, age_in_years_num=None, birth_date=None):
         patient = self.db_session.query(self.PatientDimension) \
             .filter_by(patient_num=patient_num) \
             .first()
         if not patient:
             patient = self.PatientDimension(
-                patient_num=patient_num, sex_cd=sex_cd, age_in_years_num=age_in_years_num, import_date=datetime.now()
+                patient_num=patient_num, sex_cd=sex_cd, age_in_years_num=age_in_years_num, birth_date=birth_date,
+                import_date=datetime.now()
             )
             self.db_session.add(patient)
             self.db_session.commit()
@@ -114,8 +115,12 @@ class Connection:
                 patient.age_in_years_num = age_in_years_num
                 patient.update_date = datetime.now()
                 self.db_session.commit()
+            if birth_date not in [None, '', patient.birth_date]:
+                patient.birth_date = birth_date
+                patient.update_date = datetime.now()
+                self.db_session.commit()
 
-    def save_visit(self, encounter_num, patient_num, start_date):
+    def save_visit(self, encounter_num, patient_num, start_date=None):
         visit = self.db_session.query(self.VisitDimension) \
             .filter_by(encounter_num=encounter_num, patient_num=patient_num) \
             .first()
@@ -130,7 +135,7 @@ class Connection:
             visit.update_date = datetime.now()
             self.db_session.commit()
 
-    def save_concept(self, concept_path, concept_cd):
+    def save_concept(self, concept_path, concept_cd=None):
         concept = self.db_session.query(self.ConceptDimension) \
             .filter_by(concept_path=concept_path) \
             .first()
