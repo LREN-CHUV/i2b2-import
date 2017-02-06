@@ -8,15 +8,48 @@ Introduction
 
 This library provides functions to import data into an I2B2 DB schema.
 
+Installation
+------------
+
+Run: ``pip install i2b2_import``
+
 Usage
 -----
 
-TODO
+To import brain features and other observations from a CSV file, use:
+
+::
+
+    observationfact_csv_import.csv2db(file_path, db_conn, src)
+        Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
+        * param file_path: Path to the CSV file.
+        * param db_conn: Connection to the I2B2 DB.
+        * param src: Data source (e.g. CHUV, ADNI, PPMI, etc).
+
+To import metadata from an XML file following the PPMI practice, use:
+
+::
+
+    ppmi_xml_import.PPMIXMLImport.meta2i2b2(source, db_conn):
+        The function that imports meta data from PPMI XML file into the I2B2 schema.
+        * param source: XML file containing PPMI meta data.
+        * param db_conn: Connection to the I2B2 DB.
+
+To import metadata from the data-catalog-db, use:
+
+::
+
+    datacatalogdb_import.DataCatalogDBImport.meta2i2b2(source, db_conn)
+        The function that imports meta data from the MRI DB into the I2B2 schema.
+        * param source: Connection to the MRI DB.
+        * param db_conn: Connection to the I2B2 DB.
 
 Test
 ----
 
 Open the tests directory and run ``./test.sh``.
+
+NOTE: Docker is needed.
 
 build
 -----

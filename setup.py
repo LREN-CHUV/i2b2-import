@@ -9,7 +9,7 @@ with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='i2b2-import',
-    version='0.0.1',
+    version='0.0.2',
     url='https://github.com/LREN-CHUV/i2b2-import',
     description='Import data into an I2B2 DB schema',
     long_description=long_description,
