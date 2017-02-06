@@ -1,7 +1,6 @@
 import sys
 import os
 
-from nose.tools import assert_equal
 from nose.tools import assert_greater_equal
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
