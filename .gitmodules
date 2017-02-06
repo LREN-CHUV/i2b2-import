@@ -1,3 +1,6 @@
 [submodule "tests/db"]
 	path = tests/db
 	url = git@github.com:LREN-CHUV/i2b2-db.git
+[submodule "tests/data-catalog-db"]
+	path = tests/data-catalog-db
+	url = git@github.com:LREN-CHUV/data-catalog-db.git

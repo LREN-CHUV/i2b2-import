@@ -17,7 +17,7 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 ########################################################################################################################
 
-class PPMIMetaImport(MetaImport):
+class PPMIXMLImport(MetaImport):
     """
     This is an implementation of the MetaImport class.
     It can be used to import meta data from PPMI XML file into the I2B2 schema.
