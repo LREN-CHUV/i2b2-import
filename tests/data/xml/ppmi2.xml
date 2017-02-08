@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idaxs xmlns="http://ida.loni.ucla.edu"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="/xsds/idaxs_2_0.xsd">
+<project xmlns="">
+  <projectIdentifier>PPMI</projectIdentifier>
+  <projectDescription>Parkinson&#039;s Progression Markers Initiative</projectDescription>
+  <siteKey>123</siteKey>
+  <subject>
+    <subjectIdentifier>PR00003</subjectIdentifier>
+    <researchGroup>Prodromal</researchGroup>
+    <subjectSex>F</subjectSex>
+    <visit>
+      <visitIdentifier>bl</visitIdentifier>
+    </visit>
+    <study>
+      <studyIdentifier>01</studyIdentifier>
+      <subjectAge>45.4123</subjectAge>
+      <ageQualifier>Y</ageQualifier>
+      <weightKg>70.0</weightKg>
+      <postMortem>F</postMortem>
+      <series>
+        <seriesIdentifier>05</seriesIdentifier>
+        <modality>MRI</modality>
+        <dateAcquired>2014-09-30 11:46:30.0</dateAcquired>
+        <imagingProtocol>
+          <imageUID>998877</imageUID>
+          <description>Axial PD-T2 TSE FS</description>
+          <protocolTerm>
+            <protocol term="Acquisition Type">2D</protocol>
+            <protocol term="Weighting">T2</protocol>
+            <protocol term="Pulse Sequence">SE</protocol>
+            <protocol term="Slice Thickness">3.0</protocol>
+            <protocol term="TE">101.0</protocol>
+            <protocol term="TR">3270.0</protocol>
+            <protocol term="TI">0.0</protocol>
+            <protocol term="Coil">Body</protocol>
+            <protocol term="Flip Angle">150</protocol>
+            <protocol term="Acquisition Plane">AXIAL</protocol>
+            <protocol term="Matrix X">228</protocol>
+            <protocol term="Matrix Y">256</protocol>
+            <protocol term="Matrix Z">54</protocol>
+            <protocol term="Pixel Spacing X">0.9375</protocol>
+            <protocol term="Pixel Spacing Y">0.9375</protocol>
+            <protocol term="Manufacturer">SIEMENS</protocol>
+            <protocol term="Mfg Model">TrioTim</protocol>
+            <protocol term="Field Strength">3.0</protocol>
+          </protocolTerm>
+        </imagingProtocol>
+      </series>
+    </study>
+  </subject>
+</project>
+</idaxs>

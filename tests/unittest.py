@@ -38,18 +38,23 @@ class TestPublicFunctions:
         self.i2b2_db_conn.close()
         self.dcdb_conn.close()
 
-    def test_01_csv2db(self):
-        observationfact_csv_import.csv2db('./data/features/adni.csv', self.i2b2_db_conn, 'PPMI')
-        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 12)
-
-    def test_02_xml2db(self):
+    def test_01_xml2db(self):
         ppmi_xml_import.PPMIXMLImport.meta2i2b2('./data/xml/ppmi.xml', self.i2b2_db_conn)
-        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 30)
+        ppmi_xml_import.PPMIXMLImport.meta2i2b2('./data/xml/ppmi2.xml', self.i2b2_db_conn)
+        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
 
-    def test_03_db2db(self):
+    def test_02_db2db(self):
         try:
             with open('./data/sql/test.sql', 'r') as sql_file:
                 self.dcdb_conn.engine.execute(sql_file.read())
         except IntegrityError:
             logging.warning("Cannot populate DB")
         datacatalogdb_import.DataCatalogDBImport.meta2i2b2(self.dcdb_conn, self.i2b2_db_conn)
+        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
+
+    def test_03_csv2db(self):
+        observationfact_csv_import.csv2db(
+            './data/features/PR00003/01/mt_al_mtflash3d_v2l_1mm/05/'
+            'PR00003_Neuromorphics_Vols_MPMs_global_std_values.csv', self.i2b2_db_conn, 'PPMI')
+        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 1587)
+        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ConceptDimension).count(), 1587)

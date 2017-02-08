@@ -149,3 +149,8 @@ class Connection:
             concept.concept_cd = concept_cd
             concept.update_date = datetime.now()
             self.db_session.commit()
+
+    def get_visit(self, encounter_num, patient_num):
+        return self.db_session.query(self.VisitDimension) \
+            .filter_by(encounter_num=encounter_num, patient_num=patient_num) \
+            .first()
