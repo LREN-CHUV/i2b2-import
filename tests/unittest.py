@@ -13,7 +13,8 @@ from i2b2_import import datacatalogdb_connection
 from i2b2_import import datacatalogdb_import
 
 
-DB_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
+DATA_CATALOG_DB_URL = 'postgresql://postgres:postgres@localhost:5433/postgres'
+I2B2_DB_URL = 'postgresql://postgres:postgres@localhost:5434/postgres'
 
 
 class TestPublicFunctions:
@@ -31,8 +32,8 @@ class TestPublicFunctions:
         pass
 
     def setup(self):
-        self.i2b2_db_conn = db_connection.Connection(DB_URL)
-        self.dcdb_conn = datacatalogdb_connection.Connection(DB_URL)
+        self.i2b2_db_conn = db_connection.Connection(I2B2_DB_URL)
+        self.dcdb_conn = datacatalogdb_connection.Connection(DATA_CATALOG_DB_URL)
 
     def teardown(self):
         self.i2b2_db_conn.close()

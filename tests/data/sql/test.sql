@@ -12,6 +12,6 @@ INSERT INTO "repetition"  VALUES (1,1,1);
 
 INSERT INTO "provenance" VALUES (1,'PPMI');
 
-INSERT INTO "processing_step" VALUES (1,null,1,'ACQUISITION');
+INSERT INTO "processing_step" VALUES (1,null,'ACQUISITION',null,1);
 
 INSERT INTO "data_file" VALUES (1,1,1,'/fake/fake.dcm','DICOM');
