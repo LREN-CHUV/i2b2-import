@@ -22,7 +22,7 @@ class DataCatalogDBImport(MetaImport):
 
             participant = source.db_session.query(source.Participant).filter_by(id=scan.participant_id).first()
             patient_ide = participant.id
-            sex_cd = participant.gender[0].upper()
+            sex_cd = participant.gender
             try:
                 birth_date = participant.birth_date
             except AttributeError:

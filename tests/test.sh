@@ -2,8 +2,8 @@
 
 # Start DB container
 echo "Starting DB container..."
-db_docker_id_1=$(docker run -d -p 5433:5432 hbpmip/data-catalog-db)
-db_docker_id_2=$(docker run -d -p 5434:5432 hbpmip/i2b2-db)
+db_docker_id_1=$(docker run -d -p 5433:5432 hbpmip/data-catalog-db:3c4e8d7)
+db_docker_id_2=$(docker run -d -p 5434:5432 hbpmip/i2b2-db:a38fa51)
 
 # Wait for DB to be ready
 echo "Waiting for DB to be ready..."
