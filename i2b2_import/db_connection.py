@@ -45,6 +45,13 @@ class Connection:
         except TypeError:
             return 0
 
+    def new_text_search_index(self):
+        try:
+            return self.db_session.query(sql_func.max(self.ObservationFact.text_search_index).label('max')).one().max + 1
+        except TypeError:
+            return 0
+
+
     def get_patient_num(self, patient_ide, patient_ide_source, project_id):
         patient_ide = str(patient_ide)
         patient = self.db_session.query(self.PatientMapping).filter_by(
@@ -80,7 +87,8 @@ class Connection:
             observation = self.ObservationFact(
                 encounter_num=encounter_num, concept_cd=concept_cd, provider_id=provider_id, start_date=start_date,
                 patient_num=patient_num, valtype_cd=valtype_cd,
-                tval_char=tval_char, nval_num=nval_num, import_date=datetime.now()
+                tval_char=tval_char, nval_num=nval_num, import_date=datetime.now(),
+                text_search_index=self.new_text_search_index()
             )
             self.db_session.add(observation)
             self.db_session.commit()
