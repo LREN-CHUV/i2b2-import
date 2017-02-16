@@ -58,13 +58,14 @@ class PPMIXMLImport(MetaImport):
             concept_cd = protocol.attrib['term']
             concept_path = "/sequence/" + concept_cd
             val = protocol.text
-            valtype_cd = utils.find_type(val)
-            if valtype_cd == 'N':
-                tval_char = 'E'
-                nval_num = float(val)
-            else:
-                tval_char = val
-                nval_num = None
-            db_conn.save_concept(concept_path, concept_cd)
-            db_conn.save_observation(encounter_num, concept_cd, ide_source, acquisition_date, patient_num, valtype_cd,
-                                     tval_char, nval_num)
+            if val:
+                valtype_cd = utils.find_type(val)
+                if valtype_cd == 'N':
+                    tval_char = 'E'
+                    nval_num = float(val)
+                else:
+                    tval_char = val
+                    nval_num = None
+                db_conn.save_concept(concept_path, concept_cd)
+                db_conn.save_observation(encounter_num, concept_cd, ide_source, acquisition_date, patient_num, valtype_cd,
+                                         tval_char, nval_num)
