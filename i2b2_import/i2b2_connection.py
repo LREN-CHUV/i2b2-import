@@ -51,7 +51,6 @@ class Connection:
         except TypeError:
             return 0
 
-
     def get_patient_num(self, patient_ide, patient_ide_source, project_id):
         patient_ide = str(patient_ide)
         patient = self.db_session.query(self.PatientMapping).filter_by(

@@ -1,6 +1,8 @@
 import re
 from pandas import DataFrame
 from datetime import datetime
+from glob import iglob
+from os import path
 from . import utils
 
 
@@ -16,20 +18,20 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 ########################################################################################################################
 
-def csv2db(file_path, db_conn, src):
+def csv2db(file_path, i2b2_conn, dataset):
     """
     Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
     :param file_path: Path to the CSV file.
-    :param db_conn: Connection to the I2B2 DB.
-    :param src: Data source (e.g. CHUV, ADNI, PPMI, etc).
+    :param i2b2_conn: Connection to the I2B2 DB.
+    :param dataset: Data set name.
     :return:
     """
     patient_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
     encounter_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
-    provider_id = src
-    patient_ide_source = src
-    encounter_ide_source = src
-    project_id = src
+    provider_id = dataset
+    patient_ide_source = dataset
+    encounter_ide_source = dataset
+    project_id = dataset
     df = DataFrame.from_csv(file_path, index_col=None)
     column_headers = list(df)
     concept_columns = set(column_headers) - set(STRUCTURE_NAMES_COL)
@@ -47,14 +49,19 @@ def csv2db(file_path, db_conn, src):
             else:
                 tval_char = val
                 nval_num = None
-            db_conn.save_concept(concept_path, concept_cd)
-            patient_num = db_conn.get_patient_num(patient_ide, patient_ide_source, project_id)
-            encounter_num = db_conn.get_encounter_num(encounter_ide, encounter_ide_source, project_id,
-                                                      patient_ide, patient_ide_source)
-            visit = db_conn.get_visit(encounter_num, patient_num)
+            i2b2_conn.save_concept(concept_path, concept_cd)
+            patient_num = i2b2_conn.get_patient_num(patient_ide, patient_ide_source, project_id)
+            encounter_num = i2b2_conn.get_encounter_num(encounter_ide, encounter_ide_source, project_id,
+                                                        patient_ide, patient_ide_source)
+            visit = i2b2_conn.get_visit(encounter_num, patient_num)
             try:
                 start_date = visit.start_date
             except AttributeError:
                 start_date = DEFAULT_DATE
-            db_conn.save_observation(encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd,
-                                     tval_char, nval_num)
+            i2b2_conn.save_observation(encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd,
+                                       tval_char, nval_num)
+
+
+def folder2db(folder, i2b2_conn, dataset):
+    for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
+        csv2db(file_path, i2b2_conn, dataset)
