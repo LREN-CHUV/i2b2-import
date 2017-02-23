@@ -10,10 +10,12 @@ def meta2i2b2(data_catalog_conn, i2b2_conn):
     """
     sequences = data_catalog_conn.db_session.query(data_catalog_conn.Sequence).all()
     for seq in sequences:
-        scan_id = data_catalog_conn.db_session.query(data_catalog_conn.Session).filter_by(id=seq.session_id).first().scan_id
-        scan = data_catalog_conn.db_session.query(data_catalog_conn.Scan).filter_by(id=scan_id).first()
+        scan_id = data_catalog_conn.db_session.query(data_catalog_conn.Session)\
+            .filter_by(id=seq.session_id).first().visit_id
+        scan = data_catalog_conn.db_session.query(data_catalog_conn.Visit).filter_by(id=scan_id).first()
 
-        participant = data_catalog_conn.db_session.query(data_catalog_conn.Participant).filter_by(id=scan.participant_id).first()
+        participant = data_catalog_conn.db_session.query(data_catalog_conn.Participant)\
+            .filter_by(id=scan.participant_id).first()
         patient_ide = participant.id
         sex_cd = participant.gender
         try:
