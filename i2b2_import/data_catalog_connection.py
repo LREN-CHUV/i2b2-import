@@ -106,3 +106,11 @@ class Connection:
             self.db_session.add(repetition)
             self.db_session.commit()
         return repetition.id
+
+    def get_patient_map(self, patient_id):
+        patient_map = self.db_session.query(self.ParticipantMapping).filter_by(participant_id=patient_id).one_or_none()
+        return patient_map.name, patient_map.dataset
+
+    def get_visit_map(self, visit_id):
+        visit_map = self.db_session.query(self.VisitMapping).filter_by(visit_id=visit_id).one_or_none()
+        return visit_map.name, visit_map.dataset
