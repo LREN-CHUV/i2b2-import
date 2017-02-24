@@ -21,7 +21,7 @@ DEFAULT_DATE = datetime(1, 1, 1)
 
 def meta2i2b2(xml_file, db_conn):
     """
-    The function that imports meta data from PPMI XML file into the I2B2 schema.
+    Import meta data from PPMI XML file into the I2B2 schema.
     :param xml_file: XML file containing PPMI meta data.
     :param db_conn: Connection to the I2B2 DB.
     :return:
@@ -68,5 +68,11 @@ def meta2i2b2(xml_file, db_conn):
 
 
 def folder2db(folder, db_conn):
+    """
+    Import meta data from PPMI XML file into the I2B2 schema.
+    :param folder: Folder containing XML files with PPMI meta data.
+    :param db_conn: Connection to the I2B2 DB.
+    :return:
+    """
     for file_path in iglob(path.join(folder, "**/*.xml"), recursive=True):
         meta2i2b2(file_path, db_conn)
