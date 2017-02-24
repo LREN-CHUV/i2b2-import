@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 ########################################################################################################################
@@ -37,3 +38,9 @@ def compute_age_years(subject_age, age_qualifier):
         return YEARS_PER_DAY * subject_age
     else:
         return None
+
+
+def split_patient_id(participant_id):
+    res = re.split("_", participant_id)
+    if len(res) == 2:
+        return res
