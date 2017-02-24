@@ -72,12 +72,14 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False):
                                        tval_char, nval_num)
 
 
-def folder2db(folder, i2b2_conn, dataset):
+def folder2db(folder, i2b2_conn, dataset, pid_in_vid=False):
     """
     Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
     :param folder: Folder path
     :param i2b2_conn: Connection to the I2B2 DB.
     :param dataset: Data set name.
+    :param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
+    to enable this flag. This will try to split PatientID into VisitID and PatientID.
     :return:
     """
     for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
