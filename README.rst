@@ -32,7 +32,7 @@ or from a folder:
 
 ::
 
-    features_csv_import.folder2db(folder, i2b2_conn, dataset):
+    features_csv_import.folder2db(folder, i2b2_conn, dataset, pid_in_vid=False):
         Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
         * param folder: Folder path
         * param i2b2_conn: Connection to the I2B2 DB.

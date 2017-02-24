@@ -30,13 +30,12 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False):
     """
 
     patient_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
+    encounter_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
     if pid_in_vid:
         try:
             encounter_ide, patient_ide = utils.split_patient_id(patient_ide)
         except TypeError:
             pass
-    else:
-        encounter_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
 
     provider_id = dataset
     patient_ide_source = dataset
@@ -83,4 +82,4 @@ def folder2db(folder, i2b2_conn, dataset, pid_in_vid=False):
     :return:
     """
     for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
-        csv2db(file_path, i2b2_conn, dataset)
+        csv2db(file_path, i2b2_conn, dataset, pid_in_vid)
