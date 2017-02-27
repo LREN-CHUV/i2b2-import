@@ -49,7 +49,7 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False):
         struct_name = row[STRUCTURE_NAMES_COL]
         for concept_postfix in concept_columns:
             concept_cd = struct_name[:20] + "_" + concept_postfix[:20]
-            concept_path = str(struct_name + "/" + concept_postfix).replace(' ', '')
+            concept_path = str("/brain/" + struct_name + "/" + concept_postfix).replace(' ', '')
             val = row[concept_postfix]
             valtype_cd = utils.find_type(val)
             if valtype_cd == 'N':
