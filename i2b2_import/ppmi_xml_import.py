@@ -32,7 +32,6 @@ def meta2i2b2(xml_file, db_conn):
     subject_id = tree.find('./project/subject/subjectIdentifier').text
     subject_sex = tree.find('./project/subject/subjectSex').text
     study_id = tree.find('./project/subject/study/studyIdentifier').text
-    study_id = 'S' + study_id  # In PPMI the ID from DICOM is prefixed by an 'S'
     subject_age = tree.find('./project/subject/study/subjectAge').text
     age_qualifier = tree.find('./project/subject/study/ageQualifier').text
     subject_age_years = utils.compute_age_years(subject_age, age_qualifier)
