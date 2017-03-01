@@ -79,6 +79,8 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False
             visit = i2b2_conn.get_visit(encounter_num, patient_num)
             try:
                 start_date = visit.start_date
+                if not start_date:
+                    raise AttributeError
             except AttributeError:
                 start_date = DEFAULT_DATE
             i2b2_conn.save_observation(encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd,
