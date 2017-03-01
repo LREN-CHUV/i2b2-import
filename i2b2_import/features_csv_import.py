@@ -27,6 +27,8 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False
     :param dataset: Data set name.
     :param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
     to enable this flag. This will try to split PatientID into VisitID and PatientID.
+    :param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+    E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
     :return:
     """
 
@@ -83,7 +85,7 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False
                                        tval_char, nval_num)
 
 
-def folder2db(folder, i2b2_conn, dataset, pid_in_vid=False):
+def folder2db(folder, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False):
     """
     Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
     :param folder: Folder path
@@ -91,7 +93,9 @@ def folder2db(folder, i2b2_conn, dataset, pid_in_vid=False):
     :param dataset: Data set name.
     :param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
     to enable this flag. This will try to split PatientID into VisitID and PatientID.
+    :param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+    E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
     :return:
     """
     for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
-        csv2db(file_path, i2b2_conn, dataset, pid_in_vid)
+        csv2db(file_path, i2b2_conn, dataset, pid_in_vid, sid_by_patient)
