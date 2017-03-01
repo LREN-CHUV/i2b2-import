@@ -27,6 +27,8 @@ To import brain features and other observations from a CSV file, use:
         * param dataset: Data set name.
         * param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
         to enable this flag. This will try to split PatientID into VisitID and PatientID.
+        * param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
 
 or from a folder:
 
@@ -39,6 +41,8 @@ or from a folder:
         * param dataset: Data set name.
         * param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
         to enable this flag. This will try to split PatientID into VisitID and PatientID.
+        * param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
 
 To import metadata from an XML file following the PPMI practice, use:
 
