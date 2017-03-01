@@ -13,12 +13,12 @@ def meta2i2b2(data_catalog_conn, i2b2_conn):
         visit_id = data_catalog_conn.db_session.query(data_catalog_conn.Session)\
             .filter_by(id=seq.session_id).one_or_none().visit_id
         visit = data_catalog_conn.db_session.query(data_catalog_conn.Visit).filter_by(id=visit_id).one_or_none()
+        visit_date = visit.date
 
         participant = data_catalog_conn.db_session.query(data_catalog_conn.Participant)\
             .filter_by(id=visit.participant_id).one_or_none()
         patient_id = participant.id
         sex_cd = participant.gender
-
         try:
             birth_date = participant.birth_date
         except AttributeError:
@@ -28,11 +28,11 @@ def meta2i2b2(data_catalog_conn, i2b2_conn):
         except (AttributeError, TypeError):
             age_in_years_num = None
 
+        visit_ide, dataset = data_catalog_conn.get_visit_map(visit_id)
         patient_ide, dataset = data_catalog_conn.get_patient_map(patient_id)
 
-        patient_ide_source = dataset
-        project_id = dataset
+        encounter_num = i2b2_conn.get_encounter_num(visit_ide, dataset, dataset, patient_ide, dataset)
+        patient_num = i2b2_conn.get_patient_num(patient_ide, dataset, dataset)
 
-        patient_num = i2b2_conn.get_patient_num(patient_ide, patient_ide_source, project_id)
-
+        i2b2_conn.save_visit(encounter_num, patient_num, visit_date)
         i2b2_conn.save_patient(patient_num, sex_cd, age_in_years_num, birth_date)
