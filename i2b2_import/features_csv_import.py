@@ -19,7 +19,7 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 ########################################################################################################################
 
-def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False):
+def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False):
     """
     Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
     :param file_path: Path to the CSV file.
@@ -31,20 +31,30 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False):
     """
 
     patient_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
-    encounter_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
+    encounter_ide = None
+
     if pid_in_vid:
         try:
             encounter_ide, patient_ide = utils.split_patient_id(patient_ide)
         except TypeError:
-            pass
+            encounter_ide = None
+    if not pid_in_vid or not encounter_ide:
+        try:
+            encounter_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
+            if sid_by_patient:  # If the Study ID is given at the patient level (e.g. LREN data), here is a little trick
+                encounter_ide = patient_ide + "_" + encounter_ide
+        except AttributeError:
+            encounter_ide = None
 
     provider_id = dataset
     patient_ide_source = dataset
     encounter_ide_source = dataset
     project_id = dataset
+
     df = DataFrame.from_csv(file_path, index_col=None)
     column_headers = list(df)
     concept_columns = set(column_headers) - set(STRUCTURE_NAMES_COL)
+
     for row in df.iterrows():
         row = row[1]  # (index, row) -> row
         struct_name = row[STRUCTURE_NAMES_COL]
@@ -59,6 +69,7 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False):
             else:
                 tval_char = val
                 nval_num = None
+
             i2b2_conn.save_concept(concept_path, concept_cd)
             patient_num = i2b2_conn.get_patient_num(patient_ide, patient_ide_source, project_id)
             encounter_num = i2b2_conn.get_encounter_num(encounter_ide, encounter_ide_source, project_id,
