@@ -24,7 +24,7 @@ def meta2i2b2(data_catalog_conn, i2b2_conn):
         except AttributeError:
             birth_date = None
         try:
-            age_in_years_num = int(floor(participant.age)) + 1  # I2B2 uses an integer value for age
+            age_in_years_num = int(floor(participant.age))  # I2B2 uses an integer value for age
         except (AttributeError, TypeError):
             age_in_years_num = None
 
