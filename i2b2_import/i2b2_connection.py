@@ -127,13 +127,14 @@ class Connection:
                 patient.update_date = datetime.now()
                 self.db_session.commit()
 
-    def save_visit(self, encounter_num, patient_num, start_date=None):
+    def save_visit(self, encounter_num, patient_num, start_date=None, location_cd=None):
         visit = self.db_session.query(self.VisitDimension) \
             .filter_by(encounter_num=encounter_num, patient_num=patient_num) \
             .first()
         if not visit:
             visit = self.VisitDimension(
-                encounter_num=encounter_num, patient_num=patient_num, start_date=start_date, import_date=datetime.now()
+                encounter_num=encounter_num, patient_num=patient_num, start_date=start_date, import_date=datetime.now(),
+                location_cd=location_cd
             )
             self.db_session.add(visit)
             self.db_session.commit()

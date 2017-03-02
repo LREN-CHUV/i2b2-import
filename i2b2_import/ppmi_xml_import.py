@@ -29,6 +29,7 @@ def meta2i2b2(xml_file, db_conn):
     tree = ElementTree.parse(xml_file)
     project_id = tree.find('./project/projectIdentifier').text
     ide_source = project_id
+    site = tree.find('./project/siteKey').text
     subject_id = tree.find('./project/subject/subjectIdentifier').text
     subject_sex = tree.find('./project/subject/subjectSex').text
     study_id = tree.find('./project/subject/study/studyIdentifier').text
@@ -47,7 +48,7 @@ def meta2i2b2(xml_file, db_conn):
     db_conn.save_patient(patient_num, subject_sex, subject_age_years)
 
     encounter_num = db_conn.get_encounter_num(study_id, ide_source, project_id, subject_id, ide_source)
-    db_conn.save_visit(encounter_num, patient_num, acquisition_date)
+    db_conn.save_visit(encounter_num, patient_num, acquisition_date, site)
 
     for protocol in protocols:
         concept_cd = protocol.attrib['term']
