@@ -12,7 +12,7 @@ INSERT INTO "visit" VALUES (1,null,null,null,1);
 
 INSERT INTO "session" VALUES (1,'session_1',1);
 
-INSERT INTO "sequence_type" VALUES (1,'TEST SEQ');
+INSERT INTO "sequence_type" VALUES (1,'TEST SEQ', 'Siemens');
 
 INSERT INTO "sequence" VALUES (1,'seq1',1,1);
 

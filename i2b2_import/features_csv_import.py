@@ -11,7 +11,7 @@ from . import utils
 ########################################################################################################################
 
 STRUCTURE_NAMES_COL = 'Structure Names'
-CONCEPT_PATH_PREFIX = '/Brain'
+CONCEPT_PATH_PREFIX = '/Imaging Data/Features/Brain'
 DEFAULT_DATE = datetime(1, 1, 1)
 
 
