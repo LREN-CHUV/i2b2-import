@@ -61,31 +61,32 @@ def _save_sequence(i2b2_conn, seq, seq_type, encounter_num, patient_num, start_d
     i2b2_conn.save_observation(encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd, tval_char,
                                nval_num)
 
-    seq_param_list = [
-        {'name': 'manufacturer', 'type': 'T', 'value': seq_type.manufacturer},
-        {'name': 'magnetic_field_strength', 'type': 'N', 'value': seq_type.magnetic_field_strength},
-        {'name': 'institution_name', 'type': 'T', 'value': seq_type.institution_name},
-        {'name': 'slice_thickness', 'type': 'N', 'value': seq_type.slice_thickness},
-        {'name': 'repetition_time', 'type': 'N', 'value': seq_type.repetition_time},
-        {'name': 'echo_time', 'type': 'N', 'value': seq_type.echo_time},
-        {'name': 'echo_number', 'type': 'N', 'value': seq_type.echo_number},
-        {'name': 'number_of_phase_encoding_steps', 'type': 'N', 'value': seq_type.number_of_phase_encoding_steps},
-        {'name': 'percent_phase_field_of_view', 'type': 'N', 'value': seq_type.percent_phase_field_of_view},
-        {'name': 'pixel_bandwidth', 'type': 'N', 'value': seq_type.pixel_bandwidth},
-        {'name': 'flip_angle', 'type': 'N', 'value': seq_type.flip_angle},
-        {'name': 'rows', 'type': 'N', 'value': seq_type.rows},
-        {'name': 'columns', 'type': 'N', 'value': seq_type.columns},
-        {'name': 'magnetic_field_strength', 'type': 'N', 'value': seq_type.magnetic_field_strength},
-        {'name': 'space_between_slices', 'type': 'N', 'value': seq_type.space_between_slices},
-        {'name': 'echo_train_length', 'type': 'N', 'value': seq_type.echo_train_length},
-        {'name': 'percent_sampling', 'type': 'N', 'value': seq_type.percent_sampling},
-        {'name': 'pixel_spacing_0', 'type': 'N', 'value': seq_type.pixel_spacing_0},
-        {'name': 'pixel_spacing_1', 'type': 'N', 'value': seq_type.pixel_spacing_1}
-    ]
+    if seq_type:
+        seq_param_list = [
+            {'name': 'manufacturer', 'type': 'T', 'value': seq_type.manufacturer},
+            {'name': 'magnetic_field_strength', 'type': 'N', 'value': seq_type.magnetic_field_strength},
+            {'name': 'institution_name', 'type': 'T', 'value': seq_type.institution_name},
+            {'name': 'slice_thickness', 'type': 'N', 'value': seq_type.slice_thickness},
+            {'name': 'repetition_time', 'type': 'N', 'value': seq_type.repetition_time},
+            {'name': 'echo_time', 'type': 'N', 'value': seq_type.echo_time},
+            {'name': 'echo_number', 'type': 'N', 'value': seq_type.echo_number},
+            {'name': 'number_of_phase_encoding_steps', 'type': 'N', 'value': seq_type.number_of_phase_encoding_steps},
+            {'name': 'percent_phase_field_of_view', 'type': 'N', 'value': seq_type.percent_phase_field_of_view},
+            {'name': 'pixel_bandwidth', 'type': 'N', 'value': seq_type.pixel_bandwidth},
+            {'name': 'flip_angle', 'type': 'N', 'value': seq_type.flip_angle},
+            {'name': 'rows', 'type': 'N', 'value': seq_type.rows},
+            {'name': 'columns', 'type': 'N', 'value': seq_type.columns},
+            {'name': 'magnetic_field_strength', 'type': 'N', 'value': seq_type.magnetic_field_strength},
+            {'name': 'space_between_slices', 'type': 'N', 'value': seq_type.space_between_slices},
+            {'name': 'echo_train_length', 'type': 'N', 'value': seq_type.echo_train_length},
+            {'name': 'percent_sampling', 'type': 'N', 'value': seq_type.percent_sampling},
+            {'name': 'pixel_spacing_0', 'type': 'N', 'value': seq_type.pixel_spacing_0},
+            {'name': 'pixel_spacing_1', 'type': 'N', 'value': seq_type.pixel_spacing_1}
+        ]
 
-    for seq_param in seq_param_list:
-        _save_sequence_parameter(i2b2_conn, seq_type.name, seq_param['name'], seq_param['type'], seq_param['value'],
-                                 encounter_num, provider_id, start_date, patient_num)
+        for seq_param in seq_param_list:
+            _save_sequence_parameter(i2b2_conn, seq_type.name, seq_param['name'], seq_param['type'], seq_param['value'],
+                                     encounter_num, provider_id, start_date, patient_num)
 
 
 def _save_sequence_parameter(i2b2_conn, sequence_name, param_name, param_type, param_val, encounter_num, provider_id,
