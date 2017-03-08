@@ -16,61 +16,65 @@ Run: ``pip install i2b2_import``
 Usage
 -----
 
-To import brain features and other observations from a CSV file, use:
+To import brain features (and/or other observations) from a CSV file,
+use:
 
 ::
 
-    features_csv_import.csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False):
+    features_csv_import.csv2db(file_path, i2b2_conn, dataset, config):
         Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
         * param file_path: Path to the CSV file.
         * param i2b2_conn: Connection to the I2B2 DB.
         * param dataset: Data set name.
-        * param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
-        to enable this flag. This will try to split PatientID into VisitID and PatientID.
-        * param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
+        * param config: A few settings. It is a dictionary that accepts the following fields:
+            - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
+            to enable this flag. This will try to split PatientID into VisitID and PatientID.
+            - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+            E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
 
 or from a folder:
 
 ::
 
-    features_csv_import.folder2db(folder, i2b2_conn, dataset, pid_in_vid=False):
+    features_csv_import.folder2db(folder, i2b2_conn, dataset, config):
         Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
         * param folder: Folder path
         * param i2b2_conn: Connection to the I2B2 DB.
         * param dataset: Data set name.
-        * param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
-        to enable this flag. This will try to split PatientID into VisitID and PatientID.
-        * param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
-
-To import metadata from an XML file following the PPMI practice, use:
-
-::
-
-    ppmi_xml_import.meta2i2b2(xml_file, db_conn):
-        Import meta data from PPMI XML file into the I2B2 schema.
-        * param xml_file: XML file containing PPMI meta data.
-        * param db_conn: Connection to the I2B2 DB.
-
-or from a folder:
-
-::
-
-    ppmi_xml_import.folder2db(folder, db_conn):
-        """
-        Import meta data from PPMI XML file into the I2B2 schema.
-        * param folder: Folder containing XML files with PPMI meta data.
-        * param db_conn: Connection to the I2B2 DB.
+        * param config: A few settings. It is a dictionary that accepts the following fields:
+            - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
+            to enable this flag. This will try to split PatientID into VisitID and PatientID.
+            - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+            E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
 
 To import metadata from the data-catalog-db, use:
 
 ::
 
-    data_catalog_import.meta2i2b2(data_catalog_conn, i2b2_conn):
+    data_catalog_import.catalog2i2b2(data_catalog_conn, i2b2_conn):
         Import meta data from the Data Catalog DB to the I2B2 schema.
         * param data_catalog_conn: Connection to the Data Catalog DB.
         * param i2b2_conn: Connection to the I2B2 DB.
+
+To import metadata from extra files (XML, JSON, ...), use:
+
+::
+
+    ppmi_xml_import.meta2i2b2(file_path, db_conn, dataset):
+        Import meta-data from a file into the I2B2 schema.
+        * param file_path: File (XML, JSON, ...) containing meta-data for a given dataset (PPMI, EDSD, ...).
+        * param db_conn: Connection to the I2B2 DB.
+        * param dataset: Dataset ID (each dataset uses its own meta-data files format)
+
+or from a folder:
+
+::
+
+    ppmi_xml_import.folder2db(folder, db_conn, dataset):
+        Import meta-data from files from a given folder (recursive) and for a given dataset into the I2B2 schema.
+        * param folder: Folder containing meta-data files for a given dataset.
+        * param db_conn: Connection to the I2B2 DB.
+        * param dataset: Dataset ID (each dataset uses its own meta-data files format)
 
 Test
 ----

@@ -19,18 +19,27 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 ########################################################################################################################
 
-def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False):
+def csv2db(file_path, i2b2_conn, dataset, config=None):
     """
     Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
     :param file_path: Path to the CSV file.
     :param i2b2_conn: Connection to the I2B2 DB.
     :param dataset: Data set name.
-    :param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
-    to enable this flag. This will try to split PatientID into VisitID and PatientID.
-    :param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-    E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
+    :param config: A few settings. It is a dictionary that accepts the following fields:
+        - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
+        to enable this flag. This will try to split PatientID into VisitID and PatientID.
+        - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
     :return:
     """
+    try:
+        pid_in_vid = config['pid_in_vid']
+    except (KeyError, TypeError):
+        pid_in_vid = False
+    try:
+        sid_by_patient = config['sid_by_patient']
+    except (KeyError, TypeError):
+        sid_by_patient = False
 
     patient_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
     encounter_ide = None
@@ -87,17 +96,18 @@ def csv2db(file_path, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False
                                        tval_char, nval_num)
 
 
-def folder2db(folder, i2b2_conn, dataset, pid_in_vid=False, sid_by_patient=False):
+def folder2db(folder, i2b2_conn, dataset, config=None):
     """
     Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
     :param folder: Folder path
     :param i2b2_conn: Connection to the I2B2 DB.
     :param dataset: Data set name.
-    :param pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
-    to enable this flag. This will try to split PatientID into VisitID and PatientID.
-    :param sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-    E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session ID.
+    :param config: A few settings. It is a dictionary that accepts the following fields:
+        - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
+        to enable this flag. This will try to split PatientID into VisitID and PatientID.
+        - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
     :return:
     """
     for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
-        csv2db(file_path, i2b2_conn, dataset, pid_in_vid, sid_by_patient)
+        csv2db(file_path, i2b2_conn, dataset, config)

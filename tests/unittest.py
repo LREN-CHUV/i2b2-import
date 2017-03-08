@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from i2b2_import import i2b2_connection
 from i2b2_import import data_catalog_connection
 from i2b2_import import features_csv_import
-from i2b2_import import ppmi_xml_import
+from i2b2_import import meta_files_import
 from i2b2_import import data_catalog_import
 
 
@@ -40,8 +40,8 @@ class TestPublicFunctions:
         self.dcdb_conn.close()
 
     def test_01_xml2db(self):
-        ppmi_xml_import.meta2i2b2('./data/xml/ppmi.xml', self.i2b2_db_conn)
-        ppmi_xml_import.meta2i2b2('./data/xml/ppmi2.xml', self.i2b2_db_conn)
+        meta_files_import.meta2i2b2('./data/xml/ppmi.xml', self.i2b2_db_conn, 'PPMI')
+        meta_files_import.meta2i2b2('./data/xml/ppmi2.xml', self.i2b2_db_conn, 'PPMI')
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
 
     def test_02_db2db(self):
@@ -50,7 +50,7 @@ class TestPublicFunctions:
                 self.dcdb_conn.engine.execute(sql_file.read())
         except IntegrityError:
             logging.warning("Cannot populate DB")
-        data_catalog_import.meta2i2b2(self.dcdb_conn, self.i2b2_db_conn)
+        data_catalog_import.catalog2i2b2(self.dcdb_conn, self.i2b2_db_conn)
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
 
     def test_03_csv2db(self):

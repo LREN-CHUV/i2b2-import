@@ -1,8 +1,6 @@
-from datetime import datetime
 from defusedxml import ElementTree
 from math import floor
-from glob import iglob
-from os import path
+from datetime import datetime
 
 from . import utils
 
@@ -18,14 +16,7 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 ########################################################################################################################
 
-
-def meta2i2b2(xml_file, db_conn):
-    """
-    Import meta data from PPMI XML file into the I2B2 schema.
-    :param xml_file: XML file containing PPMI meta data.
-    :param db_conn: Connection to the I2B2 DB.
-    :return:
-    """
+def xml2i2b2(xml_file, db_conn):
     tree = ElementTree.parse(xml_file)
     project_id = tree.find('./project/projectIdentifier').text
     ide_source = project_id
@@ -65,14 +56,3 @@ def meta2i2b2(xml_file, db_conn):
             db_conn.save_concept(concept_path, concept_cd)
             db_conn.save_observation(encounter_num, concept_cd, ide_source, acquisition_date, patient_num, valtype_cd,
                                      tval_char, nval_num)
-
-
-def folder2db(folder, db_conn):
-    """
-    Import meta data from PPMI XML file into the I2B2 schema.
-    :param folder: Folder containing XML files with PPMI meta data.
-    :param db_conn: Connection to the I2B2 DB.
-    :return:
-    """
-    for file_path in iglob(path.join(folder, "**/*.xml"), recursive=True):
-        meta2i2b2(file_path, db_conn)

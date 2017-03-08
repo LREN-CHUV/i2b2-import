@@ -7,7 +7,7 @@ SEQ_CONCEPT_PATH_PREFIX = '/Imaging Data/Acquisition Settings'
 DEFAULT_DATE = datetime.now()
 
 
-def meta2i2b2(data_catalog_conn, i2b2_conn):
+def catalog2i2b2(data_catalog_conn, i2b2_conn):
     """
     Import meta data from the Data Catalog DB to the I2B2 schema.
     :param data_catalog_conn: Connection to the Data Catalog DB.
