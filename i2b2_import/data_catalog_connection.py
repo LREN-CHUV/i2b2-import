@@ -42,7 +42,7 @@ class Connection:
             return self.db_session.query(
                 sql_func.max(self.ParticipantMapping.participant_id).label('max')).one().max + 1
         except TypeError:
-            return 0
+            return 1
 
     def get_participant_id(self, participant_name, dataset):
         participant_name = str(participant_name)
@@ -60,7 +60,7 @@ class Connection:
             return self.db_session.query(
                 sql_func.max(self.VisitMapping.visit_id).label('max')).one().max + 1
         except TypeError:
-            return 0
+            return 1
 
     def get_visit_id(self, visit_name, dataset):
         import logging

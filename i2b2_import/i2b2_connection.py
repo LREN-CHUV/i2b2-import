@@ -37,19 +37,20 @@ class Connection:
         try:
             return self.db_session.query(sql_func.max(self.PatientMapping.patient_num).label('max')).one().max + 1
         except TypeError:
-            return 0
+            return 1
 
     def new_encounter_num(self):
         try:
             return self.db_session.query(sql_func.max(self.EncounterMapping.encounter_num).label('max')).one().max + 1
         except TypeError:
-            return 0
+            return 1
 
     def new_text_search_index(self):
         try:
-            return self.db_session.query(sql_func.max(self.ObservationFact.text_search_index).label('max')).one().max + 1
+            return self.db_session.query(
+                sql_func.max(self.ObservationFact.text_search_index).label('max')).one().max + 1
         except TypeError:
-            return 0
+            return 1
 
     def get_patient_num(self, patient_ide, patient_ide_source, project_id):
         patient_ide = str(patient_ide)
