@@ -20,6 +20,10 @@ def catalog2i2b2(data_catalog_conn, i2b2_conn):
             .filter_by(id=seq.session_id).one_or_none().visit_id
         visit = data_catalog_conn.db_session.query(data_catalog_conn.Visit).filter_by(id=visit_id).one_or_none()
         visit_date = visit.date
+        try:
+            visit_age = visit.patient_age
+        except AttributeError:
+            visit_age = None
 
         participant = data_catalog_conn.db_session.query(data_catalog_conn.Participant)\
             .filter_by(id=visit.participant_id).one_or_none()
@@ -29,10 +33,6 @@ def catalog2i2b2(data_catalog_conn, i2b2_conn):
             birth_date = participant.birth_date
         except AttributeError:
             birth_date = None
-        try:
-            age_in_years_num = int(floor(participant.age))  # I2B2 uses an integer value for age
-        except (AttributeError, TypeError):
-            age_in_years_num = None
 
         visit_ide, dataset = data_catalog_conn.get_visit_map(visit_id)
         patient_ide, dataset = data_catalog_conn.get_patient_map(patient_id)
@@ -40,8 +40,8 @@ def catalog2i2b2(data_catalog_conn, i2b2_conn):
         encounter_num = i2b2_conn.get_encounter_num(visit_ide, dataset, dataset, patient_ide, dataset)
         patient_num = i2b2_conn.get_patient_num(patient_ide, dataset, dataset)
 
-        i2b2_conn.save_visit(encounter_num, patient_num, visit_date)
-        i2b2_conn.save_patient(patient_num, sex_cd, age_in_years_num, birth_date)
+        i2b2_conn.save_visit(encounter_num, patient_num, visit_age, visit_date)
+        i2b2_conn.save_patient(patient_num, sex_cd, birth_date)
 
         seq_type = data_catalog_conn.db_session.query(data_catalog_conn.SequenceType)\
             .filter_by(id=seq.sequence_type_id).one_or_none()

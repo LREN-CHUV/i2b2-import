@@ -27,7 +27,6 @@ def xml2i2b2(xml_file, db_conn):
     subject_age = tree.find('./project/subject/study/subjectAge').text
     age_qualifier = tree.find('./project/subject/study/ageQualifier').text
     subject_age_years = utils.compute_age_years(subject_age, age_qualifier)
-    subject_age_years = int(floor(subject_age_years)) + 1  # I2B2 uses an integer value for age
     try:
         acquisition_date = datetime.strptime(
             tree.find('./project/subject/study/series/dateAcquired').text, '%Y-%m-%d %H:%M:%S.%f')
@@ -36,10 +35,10 @@ def xml2i2b2(xml_file, db_conn):
     protocols = tree.findall('./project/subject/study/series/imagingProtocol/protocolTerm/protocol')
 
     patient_num = db_conn.get_patient_num(subject_id, ide_source, project_id)
-    db_conn.save_patient(patient_num, subject_sex, subject_age_years)
+    db_conn.save_patient(patient_num, subject_sex)
 
     encounter_num = db_conn.get_encounter_num(study_id, ide_source, project_id, subject_id, ide_source)
-    db_conn.save_visit(encounter_num, patient_num, acquisition_date, site)
+    db_conn.save_visit(encounter_num, patient_num, subject_age_years, acquisition_date, site)
 
     for protocol in protocols:
         concept_cd = protocol.attrib['term']

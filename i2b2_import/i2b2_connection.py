@@ -119,28 +119,28 @@ class Connection:
                 patient.sex_cd = sex_cd
                 patient.update_date = datetime.now()
                 self.db_session.commit()
-            if age_in_years_num not in [None, '', patient.age_in_years_num]:
-                patient.age_in_years_num = age_in_years_num
-                patient.update_date = datetime.now()
-                self.db_session.commit()
             if birth_date not in [None, '', patient.birth_date]:
                 patient.birth_date = birth_date
                 patient.update_date = datetime.now()
                 self.db_session.commit()
 
-    def save_visit(self, encounter_num, patient_num, start_date=None, location_cd=None):
+    def save_visit(self, encounter_num, patient_num, patient_age=None, start_date=None, location_cd=None):
         visit = self.db_session.query(self.VisitDimension) \
             .filter_by(encounter_num=encounter_num, patient_num=patient_num) \
             .first()
         if not visit:
             visit = self.VisitDimension(
-                encounter_num=encounter_num, patient_num=patient_num, start_date=start_date, import_date=datetime.now(),
-                location_cd=location_cd
+                encounter_num=encounter_num, patient_num=patient_num, patient_age=patient_age, start_date=start_date,
+                location_cd=location_cd, import_date=datetime.now()
             )
             self.db_session.add(visit)
             self.db_session.commit()
         elif start_date not in [None, visit.start_date]:
             visit.start_date = start_date
+            visit.update_date = datetime.now()
+            self.db_session.commit()
+        elif patient_age not in [None, visit.patient_age]:
+            visit.patient_age = patient_age
             visit.update_date = datetime.now()
             self.db_session.commit()
 

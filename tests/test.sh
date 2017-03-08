@@ -9,8 +9,8 @@ echo "Searching for gateway IP..."
 GATEWAY_IP=$(ip addr | grep docker | grep inet | grep -Eo '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*')
 
 echo "Creating deploying schemas..."
-docker run --rm -e "DB_URL=postgresql://postgres:postgres@$GATEWAY_IP:5433/postgres" hbpmip/data-catalog-setup:1.4.1 upgrade head
-docker run --rm -e "DB_URL=postgresql://postgres:postgres@$GATEWAY_IP:5434/postgres" hbpmip/i2b2-setup:1.4.0 upgrade head
+docker run --rm -e "DB_URL=postgresql://postgres:postgres@$GATEWAY_IP:5433/postgres" hbpmip/data-catalog-setup:1.4.5 upgrade head
+docker run --rm -e "DB_URL=postgresql://postgres:postgres@$GATEWAY_IP:5434/postgres" hbpmip/i2b2-setup:1.4.5 upgrade head
 sleep 5  # TODO: replace this by a test
 
 echo "Running unit tests..."
