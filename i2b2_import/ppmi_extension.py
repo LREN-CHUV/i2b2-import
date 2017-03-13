@@ -1,5 +1,4 @@
 from defusedxml import ElementTree
-from math import floor
 from datetime import datetime
 
 from . import utils

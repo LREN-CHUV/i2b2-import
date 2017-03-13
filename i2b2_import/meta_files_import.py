@@ -2,6 +2,7 @@ from glob import iglob
 from os import path
 
 from . import ppmi_extension
+from . import edsd_extension
 
 
 ########################################################################################################################
@@ -19,6 +20,8 @@ def meta2i2b2(file_path, db_conn, dataset):
     """
     if dataset.upper() == 'PPMI':
         ppmi_extension.xml2i2b2(file_path, db_conn)
+    elif dataset.upper() == 'EDSD':
+        edsd_extension.txt2i2b2(file_path, db_conn)
 
 
 def folder2db(folder, db_conn, dataset):
@@ -32,6 +35,8 @@ def folder2db(folder, db_conn, dataset):
     file_extension = ''
     if dataset.upper() == 'PPMI':
         file_extension = '.xml'
+    elif dataset.upper() == 'EDSD':
+        file_extension = '.txt'
 
     for file_path in iglob(path.join(folder, "**/*" + file_extension), recursive=True):
         meta2i2b2(file_path, db_conn, dataset)
