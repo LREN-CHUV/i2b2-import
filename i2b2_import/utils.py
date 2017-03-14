@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+import logging
 
 ########################################################################################################################
 # SETTINGS
@@ -44,3 +45,10 @@ def split_patient_id(participant_id):
     res = re.split("_", participant_id)
     if len(res) == 2:
         return res
+
+
+def datetime_from_dcm_date(date):
+    try:
+        return datetime(int(date[:4]), int(date[4:6]), int(date[6:8]))
+    except ValueError:
+        logging.warning("Cannot parse date from : " + str(date))
