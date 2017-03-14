@@ -53,7 +53,7 @@ data_catalog_import.catalog2i2b2(data_catalog_conn, i2b2_conn):
     Import meta data from the Data Catalog DB to the I2B2 schema.
     * param data_catalog_conn: Connection to the Data Catalog DB.
     * param i2b2_conn: Connection to the I2B2 DB.
-``` 
+```
 
 To import metadata from extra files (XML, JSON, ...), use:
 ```

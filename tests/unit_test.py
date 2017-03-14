@@ -1,11 +1,8 @@
-import sys
-import os
 import logging
 
 from nose.tools import assert_greater_equal
 from sqlalchemy.exc import IntegrityError
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from i2b2_import import i2b2_connection
 from i2b2_import import data_catalog_connection
 from i2b2_import import features_csv_import

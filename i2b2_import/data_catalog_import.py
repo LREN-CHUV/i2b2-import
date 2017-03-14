@@ -84,8 +84,8 @@ def _save_sequence(i2b2_conn, seq, seq_type, encounter_num, patient_num, start_d
         ]
 
         for seq_param in seq_param_list:
-            _save_sequence_parameter(i2b2_conn, seq_type.name, seq_param['name'], seq_param['type'], seq_param['value'],
-                                     encounter_num, provider_id, start_date, patient_num)
+            _save_sequence_parameter(i2b2_conn, seq_type.name, seq_param['name'], seq_param['type'],
+                                     seq_param['value'], encounter_num, provider_id, start_date, patient_num)
 
 
 def _save_sequence_parameter(i2b2_conn, sequence_name, param_name, param_type, param_val, encounter_num, provider_id,

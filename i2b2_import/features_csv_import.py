@@ -6,18 +6,18 @@ from os import path
 from . import utils
 
 
-########################################################################################################################
+#######################################################################################################################
 # SETTINGS
-########################################################################################################################
+#######################################################################################################################
 
 STRUCTURE_NAMES_COL = 'Structure Names'
 CONCEPT_PATH_PREFIX = '/Imaging Data/Features/Brain'
 DEFAULT_DATE = datetime(1, 1, 1)
 
 
-########################################################################################################################
+#######################################################################################################################
 # PUBLIC FUNCTIONS
-########################################################################################################################
+#######################################################################################################################
 
 def csv2db(file_path, i2b2_conn, dataset, config=None):
     """
@@ -29,7 +29,8 @@ def csv2db(file_path, i2b2_conn, dataset, config=None):
         - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
         to enable this flag. This will try to split PatientID into VisitID and PatientID.
         - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a
+        sessionID.
     :return:
     """
     try:
@@ -52,7 +53,7 @@ def csv2db(file_path, i2b2_conn, dataset, config=None):
     if not pid_in_vid or not encounter_ide:
         try:
             encounter_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
-            if sid_by_patient:  # If the Study ID is given at the patient level (e.g. LREN data), here is a little trick
+            if sid_by_patient:  # If the Study ID is given at the patient level (e.g. for LREN), here is a little trick
                 encounter_ide = patient_ide + "_" + encounter_ide
         except AttributeError:
             encounter_ide = None
@@ -106,7 +107,8 @@ def folder2db(folder, i2b2_conn, dataset, config=None):
         - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
         to enable this flag. This will try to split PatientID into VisitID and PatientID.
         - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a
+        sessionID.
     :return:
     """
     for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):

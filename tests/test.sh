@@ -14,7 +14,7 @@ docker run --rm -e "DB_URL=postgresql://postgres:postgres@$GATEWAY_IP:5434/postg
 sleep 5  # TODO: replace this by a test
 
 echo "Running unit tests..."
-nosetests unittest.py
+nosetests unit_test.py
 ret=$?
 
 # Remove DB container (if not on CircleCI)
