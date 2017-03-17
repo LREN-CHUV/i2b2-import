@@ -20,5 +20,5 @@ setup(
     extras_require={
         'test': ['unittest'],
     },
-    install_requires=['airflow', 'sqlalchemy', 'nose', 'psycopg2', 'pandas', 'defusedxml']
+    install_requires=['airflow', 'sqlalchemy', 'nose', 'psycopg2', 'pandas', 'defusedxml', 'xlrd']
 )
