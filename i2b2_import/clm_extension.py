@@ -1,6 +1,7 @@
 import logging
 
 from datetime import datetime
+from os.path import join
 
 from pandas import read_excel
 from pandas import notnull
@@ -11,6 +12,8 @@ from . import utils
 DATASET = 'CLM'
 SITE = 'CLM'
 DEFAULT_DATE = datetime(1, 1, 1)
+
+SEQ_CONCEPT_PATH_PREFIX = '/Imaging Data/Acquisition Settings'
 
 PROTOCOLS = [
     "t1_mprage_sag GD",
@@ -89,7 +92,7 @@ def xlsx2i2b2(file_path, db_conn):
 
 
 def _save_acquisition_setting(db_conn, concept_cd, value, encounter_num, patient_num):
-    concept_path = "/sequence/" + concept_cd
+    concept_path = join(SEQ_CONCEPT_PATH_PREFIX, concept_cd)
     if value:
         valtype_cd = utils.find_type(value)
         if valtype_cd == 'N':

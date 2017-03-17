@@ -1,5 +1,6 @@
 from defusedxml import ElementTree
 from datetime import datetime
+from os.path import join
 
 from . import utils
 
@@ -9,6 +10,7 @@ from . import utils
 #######################################################################################################################
 
 DEFAULT_DATE = datetime(1, 1, 1)
+SEQ_CONCEPT_PATH_PREFIX = '/Imaging Data/Acquisition Settings'
 
 
 #######################################################################################################################
@@ -41,7 +43,7 @@ def xml2i2b2(xml_file, db_conn):
 
     for protocol in protocols:
         concept_cd = protocol.attrib['term']
-        concept_path = "/sequence/" + concept_cd
+        concept_path = join(SEQ_CONCEPT_PATH_PREFIX, concept_cd)
         val = protocol.text
         if val:
             valtype_cd = utils.find_type(val)
