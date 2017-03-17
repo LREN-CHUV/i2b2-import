@@ -13,5 +13,6 @@ test:
     - pip install sqlalchemy
     - pip install pandas
     - pip install defusedxml
+    - pip install xlrd
   override:
     - cd ./tests && ./test.sh
