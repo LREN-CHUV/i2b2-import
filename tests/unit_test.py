@@ -36,12 +36,15 @@ class TestPublicFunctions:
         self.i2b2_db_conn.close()
         self.dcdb_conn.close()
 
-    def test_01_xml2db(self):
-        meta_files_import.meta2i2b2('./data/xml/ppmi.xml', self.i2b2_db_conn, 'PPMI')
-        meta_files_import.meta2i2b2('./data/xml/ppmi2.xml', self.i2b2_db_conn, 'PPMI')
+    def test_01_ppmi_xml_import(self):
+        meta_files_import.meta2i2b2('./data/ppmi_meta/ppmi.xml', self.i2b2_db_conn, 'PPMI')
+        meta_files_import.meta2i2b2('./data/ppmi_meta/ppmi2.xml', self.i2b2_db_conn, 'PPMI')
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
 
-    def test_02_db2db(self):
+    def test_02_clm_xlsx_import(self):
+        meta_files_import.meta2i2b2('./data/clm_meta/clm.xlsx', self.i2b2_db_conn, 'CLM')
+
+    def test_03_data_catalog_import(self):
         try:
             with open('./data/sql/test.sql', 'r') as sql_file:
                 self.dcdb_conn.engine.execute(sql_file.read())
@@ -50,7 +53,7 @@ class TestPublicFunctions:
         data_catalog_import.catalog2i2b2(self.dcdb_conn, self.i2b2_db_conn)
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
 
-    def test_03_csv2db(self):
+    def test_04_brain_features_import(self):
         features_csv_import.csv2db(
             './data/features/PR00003/01/mt_al_mtflash3d_v2l_1mm/05/'
             'PR00003_Neuromorphics_Vols_MPMs_global_std_values.csv', self.i2b2_db_conn, 'PPMI')

@@ -1,8 +1,16 @@
 import logging
 
+from datetime import datetime
+
 from pandas import read_excel
 from pandas import notnull
 
+from . import utils
+
+
+DATASET = 'CLM'
+SITE = 'CLM'
+DEFAULT_DATE = datetime(1, 1, 1)
 
 PROTOCOLS = [
     "t1_mprage_sag GD",
@@ -34,6 +42,24 @@ KEY_COLUMNS = ['CLM_R_CODE', 'ID_EVENT', 'ProtocolName']
 
 CHECK_FINITE_COLUMN = 'MagneticFieldStrength'
 
+ACQUISITION_SETTINGS = [
+    'ProtocolName',
+    'Manufacturer',
+    'ManufacturerModelName',
+    'MagneticFieldStrength',
+    'FlipAngle',
+    'Columns',
+    'Rows',
+    'EchoTrainLength',
+    'EchoTime',
+    'PercentPhaseFieldOfView',
+    'NumberOfPhaseEncodingSteps',
+    'RepetitionTime',
+    'PercentSampling',
+    'SliceThickness',
+    'PixelBandwidth'
+]
+
 
 def xlsx2i2b2(file_path, db_conn):
 
@@ -49,5 +75,29 @@ def xlsx2i2b2(file_path, db_conn):
     logging.info("discarding rows containing not enough information...")
     df = df[notnull(df[CHECK_FINITE_COLUMN])]
 
-    logging.info("exporting to CSV file...")
-    df.to_csv('/home/mirco/Bureau/results.csv')
+    logging.info("storing metadata to I2B2 database...")
+
+    for index, row in df.iterrows():
+        patient_num = db_conn.get_patient_num(row['CLM_R_CODE'], row['ID_EVENT'], DATASET)
+        db_conn.save_patient(patient_num)
+
+        encounter_num = db_conn.get_encounter_num(row['ID_EVENT'], DATASET, DATASET, row['CLM_R_CODE'], DATASET)
+        db_conn.save_visit(encounter_num, patient_num, location_cd=SITE)
+
+        for setting in ACQUISITION_SETTINGS:
+            _save_acquisition_setting(db_conn, setting, row[setting], encounter_num, patient_num)
+
+
+def _save_acquisition_setting(db_conn, concept_cd, value, encounter_num, patient_num):
+    concept_path = "/sequence/" + concept_cd
+    if value:
+        valtype_cd = utils.find_type(value)
+        if valtype_cd == 'N':
+            tval_char = 'E'
+            nval_num = float(value)
+        else:
+            tval_char = value
+            nval_num = None
+        db_conn.save_concept(concept_path, concept_cd)
+        db_conn.save_observation(encounter_num, concept_cd, DATASET, DEFAULT_DATE, patient_num, valtype_cd,
+                                 tval_char, nval_num)
