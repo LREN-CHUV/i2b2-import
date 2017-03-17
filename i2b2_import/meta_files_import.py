@@ -41,7 +41,7 @@ def folder2db(folder, db_conn, dataset):
     elif dataset.upper() == 'EDSD':
         file_extension = '.txt'
     elif dataset.upper() == 'CLM':
-        file_extension = 'xlsx'
+        file_extension = '.xlsx'
 
     for file_path in iglob(path.join(folder, "**/*" + file_extension), recursive=True):
         meta2i2b2(file_path, db_conn, dataset)
