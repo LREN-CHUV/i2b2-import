@@ -80,7 +80,7 @@ def xlsx2i2b2(file_path, db_conn):
 
     logging.info("storing metadata to I2B2 database...")
 
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         patient_num = db_conn.get_patient_num(row['CLM_R_CODE'], DATASET, DATASET)
         db_conn.save_patient(patient_num)
 
