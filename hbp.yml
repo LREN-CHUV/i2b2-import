@@ -1,0 +1,78 @@
+description: "This library provides functions to import data into an I2B2 DB schema"
+
+long_description: |
+  This library provides functions to import data into an I2B2 DB schema.
+
+
+authors:
+  - author: Mirco Nasuti
+    author_email:
+      - mirco.nasuti@chuv.ch
+    organisation: LREN-CHUV
+    organisation_badge: https://img.shields.io/badge/CHUV-LREN-AF4C64.svg
+
+platform: MIP
+component:
+  mip_building_block: data-factory
+  nature: library
+
+license:
+  name: Apache 2.0
+  badge: https://img.shields.io/badge/license-Apache--2.0-blue.svg
+  url: https://github.com/LREN-CHUV/i2b2-import/blob/master/LICENSE
+
+code_repositories:
+  - name: chuv-gitlab/HBPMedical
+    visibility: private
+    url: https://___.chuv.ch/data-factory/i2b2-import/
+    git_clone: https://___.chuv.ch/data-factory/i2b2-import.git
+  - name: github/LREN-CHUV
+    visibility: public
+    url: https://github.io/LREN-CHUV/i2b2-import/
+    git_clone: https://github.io/LREN-CHUV/i2b2-import.git
+  - name: github/HBPMedical
+    visibility: public
+    url: https://github.io/HBPMedical/i2b2-import/
+    git_clone: https://github.io/HBPMedical/i2b2-import.git
+
+code_quality_checks:
+  codacy:
+    badge: https://api.codacy.com/project/badge/Grade/850854199e9c4fbca8386a10bf1c4867
+    url: "https://www.codacy.com/app/hbp-mip/i2b2-import?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LREN-CHUV/i2b2-import&amp;utm_campaign=Badge_Grade"
+  landscape:
+    badge: "https://landscape.io/github/LREN-CHUV/i2b2-import/master/landscape.svg?style=flat"
+    url: https://landscape.io/github/LREN-CHUV/i2b2-import/master
+
+testing:
+  unit_testing: []
+
+release_management:
+  current_version: 1.5.4
+  current_code_release: https://github.com/HBPMedical/i2b2-import/archive/1.5.4.zip
+  current_binary_release: https://pypi.python.org/pypi/i2b2-import/1.5.4
+  release_script: 'publish.sh'
+
+continuous_integration:
+  - name: CircleCI
+    description: "Check style and execute unit tests"
+    url: https://circleci.com/gh/LREN-CHUV/i2b2-import
+    badge: https://circleci.com/gh/LREN-CHUV/i2b2-import.svg?style=svg
+    actions:
+      - code_style
+      - unit_tests
+
+distribution:
+  pypi:
+    badge: https://img.shields.io/pypi/v/i2b2-import.svg
+    url: https://pypi.python.org/pypi/i2b2-import/
+
+planning:
+  github:
+    name: Issues on Github
+    url: https://github.com/LREN-CHUV/i2b2-import/issues
+
+related_projects:
+  - name: i2b2-setup
+    mip_building_block: data-factory
+    relationship: depends-on-other
+    relationship_scope: runtime

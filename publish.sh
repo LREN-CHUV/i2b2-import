@@ -3,7 +3,9 @@
 set -e
 
 # Build
+echo "Build the project..."
 ./build.sh
+echo "[ok] Done"
 
 count=$(git status --porcelain | wc -l)
 if test $count -gt 0; then
@@ -31,31 +33,46 @@ select_part() {
   esac
 }
 
+git pull --tags
 # Look for a version tag in Git. If not found, ask the user to provide one
-git describe --exact-match > /dev/null || (
-  latest_version=$(git describe --abbrev=0)
+git describe --exact-match > /dev/null 2>&1 || (
+  latest_version=$(git describe --abbrev=00 || \
+    (bumpversion --dry-run --list patch | grep current_version | sed -r s,"^.*=",,) || echo '0.0.1')
   echo
   echo "Current commit has not been tagged with a version. Latest known version is $latest_version."
-  PS3='What do you want to release? '
+  echo
+  echo 'What do you want to release?'
+  PS3='Select the version increment> '
   options=("Patch release" "Minor release" "Major release" "Release with a custom version")
   select choice in "${options[@]}";
   do
     select_part "$choice"
     break
   done
-  new_version=$(bumpversion --dry-run --list patch | grep current_version | sed -r s,"^.*=",,)
+  updated_version=$(bumpversion --dry-run --list patch | grep current_version | sed -r s,"^.*=",,)
+  read -p "Release version $updated_version? [y/N] > " ok
+  if [ "$ok" != "y" ]; then
+    echo "Release aborted"
+    exit 1
+  fi
   # Bumpversion v0.5.3 does not support annotated tags
-  git tag -a -m "PyPi release $new_version" $new_version
+  git tag -a -m "PyPi release $updated_version" $updated_version
 )
 
 git push
 git push --tags
 
 # Build again to update the version
+echo "Build the project for distribution..."
 ./build.sh
+echo "[ok] Done"
 
 # Push on PyPi
-twine upload dist/*
+until twine upload dist/*
+do
+  echo "Try again to login on PyPI and release this library..."
+  read -p "Press Enter to continue > "
+done
 
 # Notify on slack
 set -e
