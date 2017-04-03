@@ -1,4 +1,4 @@
-|CircleCI| |Codacy Badge| |License|
+|CircleCI| |Codacy Badge| |License| |CHUV|
 
 I2B2 Import
 ===========
@@ -101,3 +101,5 @@ Run ``./publish.sh``.
    :target: https://www.codacy.com/app/mirco-nasuti/i2b2-import?utm_source=github.com&utm_medium=referral&utm_content=LREN-CHUV/i2b2-import&utm_campaign=Badge_Grade
 .. |License| image:: https://img.shields.io/badge/license-Apache--2.0-blue.svg
    :target: https://github.com/LREN-CHUV/i2b2-import/blob/master/LICENSE
+.. |CHUV| image:: https://img.shields.io/badge/CHUV-LREN-AF4C64.svg
+   :target: https://www.unil.ch/lren/en/home.html
