@@ -1,5 +1,6 @@
 import re
 from pandas import DataFrame
+from pandas.io.common import EmptyDataError
 from datetime import datetime
 from glob import iglob
 from os import path
@@ -63,7 +64,11 @@ def csv2db(file_path, i2b2_conn, dataset, config=None):
     encounter_ide_source = dataset
     project_id = dataset
 
-    df = DataFrame.from_csv(file_path, index_col=None)
+    try:
+        df = DataFrame.from_csv(file_path, index_col=None)
+    except EmptyDataError:
+        df = DataFrame()
+
     column_headers = list(df)
     concept_columns = set(column_headers) - set(STRUCTURE_NAMES_COL)
 
