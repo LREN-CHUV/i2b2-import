@@ -1,3 +1,4 @@
+import logging
 import re
 from pandas import DataFrame
 from pandas.io.common import EmptyDataError
@@ -5,6 +6,7 @@ from datetime import datetime
 from glob import iglob
 from os import path
 from . import utils
+from . import i2b2_connection
 
 
 #######################################################################################################################
@@ -20,11 +22,11 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 #######################################################################################################################
 
-def csv2db(file_path, i2b2_conn, dataset, config=None):
+def csv2db(file_path, i2b2_db_url, dataset, config=None):
     """
     Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
     :param file_path: Path to the CSV file.
-    :param i2b2_conn: Connection to the I2B2 DB.
+    :param i2b2_db_url: URL of the I2B2 DB.
     :param dataset: Data set name.
     :param config: A few settings. It is a dictionary that accepts the following fields:
         - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
@@ -42,6 +44,9 @@ def csv2db(file_path, i2b2_conn, dataset, config=None):
         sid_by_patient = config['sid_by_patient']
     except (KeyError, TypeError):
         sid_by_patient = False
+
+    logging.info("Connecting to database...")
+    i2b2_conn = i2b2_connection.Connection(i2b2_db_url)
 
     patient_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
     encounter_ide = None
@@ -89,8 +94,8 @@ def csv2db(file_path, i2b2_conn, dataset, config=None):
 
             i2b2_conn.save_concept(concept_path, concept_cd)
             patient_num = i2b2_conn.get_patient_num(patient_ide, patient_ide_source, project_id)
-            encounter_num = i2b2_conn.get_encounter_num(encounter_ide, encounter_ide_source, project_id,
-                                                        patient_ide, patient_ide_source)
+            encounter_num = i2b2_conn.get_encounter_num(encounter_ide, encounter_ide_source, project_id, patient_ide,
+                                                        patient_ide_source)
             visit = i2b2_conn.get_visit(encounter_num, patient_num)
             try:
                 start_date = visit.start_date
@@ -100,13 +105,14 @@ def csv2db(file_path, i2b2_conn, dataset, config=None):
                 start_date = DEFAULT_DATE
             i2b2_conn.save_observation(encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd,
                                        tval_char, nval_num)
+    i2b2_conn.close()
 
 
-def folder2db(folder, i2b2_conn, dataset, config=None):
+def folder2db(folder, i2b2_db_url, dataset, config=None):
     """
     Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
     :param folder: Folder path
-    :param i2b2_conn: Connection to the I2B2 DB.
+    :param i2b2_db_url: URL of the I2B2 DB.
     :param dataset: Data set name.
     :param config: A few settings. It is a dictionary that accepts the following fields:
         - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
@@ -117,4 +123,4 @@ def folder2db(folder, i2b2_conn, dataset, config=None):
     :return:
     """
     for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
-        csv2db(file_path, i2b2_conn, dataset, config)
+        csv2db(file_path, i2b2_db_url, dataset, config)

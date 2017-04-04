@@ -37,12 +37,13 @@ class TestPublicFunctions:
         self.dcdb_conn.close()
 
     def test_01_ppmi_xml_import(self):
-        meta_files_import.meta2i2b2('./data/ppmi_meta/ppmi.xml', self.i2b2_db_conn, 'PPMI')
-        meta_files_import.meta2i2b2('./data/ppmi_meta/ppmi2.xml', self.i2b2_db_conn, 'PPMI')
+        meta_files_import.meta2i2b2('./data/ppmi_meta/ppmi.xml', I2B2_DB_URL, 'PPMI')
+        meta_files_import.meta2i2b2('./data/ppmi_meta/ppmi2.xml', I2B2_DB_URL, 'PPMI')
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
 
     def test_02_clm_xlsx_import(self):
-        meta_files_import.meta2i2b2('./data/clm_meta/clm.xlsx', self.i2b2_db_conn, 'CLM')
+        meta_files_import.meta2i2b2('./data/clm_meta/clm.xlsx', I2B2_DB_URL, 'CLM')
+        # TODO: add assertion here
 
     def test_03_data_catalog_import(self):
         try:
@@ -50,12 +51,12 @@ class TestPublicFunctions:
                 self.dcdb_conn.engine.execute(sql_file.read())
         except IntegrityError:
             logging.warning("Cannot populate DB")
-        data_catalog_import.catalog2i2b2(self.dcdb_conn, self.i2b2_db_conn)
+        data_catalog_import.catalog2i2b2(DATA_CATALOG_DB_URL, I2B2_DB_URL)
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 36)
 
     def test_04_brain_features_import(self):
         features_csv_import.csv2db(
             './data/features/PR00003/01/mt_al_mtflash3d_v2l_1mm/05/'
-            'PR00003_Neuromorphics_Vols_MPMs_global_std_values.csv', self.i2b2_db_conn, 'PPMI')
+            'PR00003_Neuromorphics_Vols_MPMs_global_std_values.csv', I2B2_DB_URL, 'PPMI')
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 1587)
         assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ConceptDimension).count(), 1587)

@@ -1,18 +1,28 @@
+import logging
 from os import path
 from datetime import datetime
+from . import i2b2_connection
+from . import data_catalog_connection
 
 
 SEQ_CONCEPT_PATH_PREFIX = '/Imaging Data/Acquisition Settings'
 DEFAULT_DATE = datetime.now()
 
 
-def catalog2i2b2(data_catalog_conn, i2b2_conn):
+def catalog2i2b2(data_catalog_url, i2b2_db_url):
     """
     Import meta data from the Data Catalog DB to the I2B2 schema.
-    :param data_catalog_conn: Connection to the Data Catalog DB.
-    :param i2b2_conn: Connection to the I2B2 DB.
+    :param data_catalog_url: URL of the Data Catalog DB.
+    :param i2b2_db_url: URL of the I2B2 DB.
     :return:
     """
+
+    logging.info("Connecting to (i2b2) database...")
+    i2b2_conn = i2b2_connection.Connection(i2b2_db_url)
+
+    logging.info("Connecting to (data-catalog) database...")
+    data_catalog_conn = data_catalog_connection.Connection(data_catalog_url)
+
     sequences = data_catalog_conn.db_session.query(data_catalog_conn.Sequence).all()
     for seq in sequences:
         visit_id = data_catalog_conn.db_session.query(data_catalog_conn.Session)\
@@ -47,6 +57,9 @@ def catalog2i2b2(data_catalog_conn, i2b2_conn):
         start_date = visit_date if visit_date else DEFAULT_DATE
         provider_id = dataset
         _save_sequence(i2b2_conn, seq, seq_type, encounter_num, patient_num, start_date, provider_id)
+
+    data_catalog_conn.close()
+    i2b2_conn.close()
 
 
 def _save_sequence(i2b2_conn, seq, seq_type, encounter_num, patient_num, start_date, provider_id):
