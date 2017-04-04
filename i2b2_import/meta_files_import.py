@@ -1,9 +1,11 @@
+import logging
 from glob import iglob
 from os import path
 
 from . import ppmi_extension
 from . import edsd_extension
 from . import clm_extension
+from . import i2b2_connection
 
 
 #######################################################################################################################
@@ -11,27 +13,33 @@ from . import clm_extension
 #######################################################################################################################
 
 
-def meta2i2b2(file_path, db_conn, dataset):
+def meta2i2b2(file_path, i2b2_db_url, dataset):
     """
     Import meta-data from a file into the I2B2 schema.
     :param file_path: File (XML, JSON, ...) containing meta-data for a given dataset (PPMI, EDSD, ...).
-    :param db_conn: Connection to the I2B2 DB.
+    :param i2b2_db_url: URL of the I2B2 DB.
     :param dataset: Dataset ID (each dataset uses its own meta-data files format)
     :return:
     """
+
+    logging.info("Connecting to database...")
+    i2b2_conn = i2b2_connection.Connection(i2b2_db_url)
+
     if dataset.upper() == 'PPMI':
-        ppmi_extension.xml2i2b2(file_path, db_conn)
+        ppmi_extension.xml2i2b2(file_path, i2b2_conn)
     elif dataset.upper() == 'EDSD':
-        edsd_extension.txt2i2b2(file_path, db_conn)
+        edsd_extension.txt2i2b2(file_path, i2b2_conn)
     elif dataset.upper() == 'CLM':
-        clm_extension.xlsx2i2b2(file_path, db_conn)
+        clm_extension.xlsx2i2b2(file_path, i2b2_conn)
+
+    i2b2_conn.close()
 
 
-def folder2db(folder, db_conn, dataset):
+def folder2db(folder, i2b2_db_url, dataset):
     """
     Import meta-data from files from a given folder (recursive) and for a given dataset into the I2B2 schema.
     :param folder: Folder containing meta-data files for a given dataset.
-    :param db_conn: Connection to the I2B2 DB.
+    :param i2b2_db_url: URL of the I2B2 DB.
     :param dataset: Dataset ID (each dataset uses its own meta-data files format)
     :return:
     """
@@ -44,4 +52,4 @@ def folder2db(folder, db_conn, dataset):
         file_extension = '.xlsx'
 
     for file_path in iglob(path.join(folder, "**/*" + file_extension), recursive=True):
-        meta2i2b2(file_path, db_conn, dataset)
+        meta2i2b2(file_path, i2b2_db_url, dataset)
