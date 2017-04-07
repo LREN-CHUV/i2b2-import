@@ -9,11 +9,11 @@ from pandas import notnull
 from . import utils
 
 
-DATASET = 'CLM'
-SITE = 'CLM'
+DATASET = 'clm'
+SITE = 'clm'
 DEFAULT_DATE = datetime(1, 1, 1)
 
-SEQ_CONCEPT_PATH_PREFIX = '/Imaging Data/Acquisition Settings'
+SEQ_PATH_PREFIX = 'Imaging Data/Acquisition Settings'
 
 PROTOCOLS = [
     "t1_mprage_sag GD",
@@ -91,8 +91,9 @@ def xlsx2i2b2(file_path, db_conn):
             _save_acquisition_setting(db_conn, setting, row[setting], encounter_num, patient_num)
 
 
-def _save_acquisition_setting(db_conn, concept_cd, value, encounter_num, patient_num):
-    concept_path = join(SEQ_CONCEPT_PATH_PREFIX, concept_cd)
+def _save_acquisition_setting(db_conn, setting, value, encounter_num, patient_num):
+    concept_cd = DATASET + ':' + setting
+    concept_path = join(DATASET, SEQ_PATH_PREFIX, setting)
     if value:
         valtype_cd = utils.find_type(value)
         if valtype_cd == 'N':

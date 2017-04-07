@@ -5,7 +5,7 @@ from . import i2b2_connection
 from . import data_catalog_connection
 
 
-SEQ_CONCEPT_PATH_PREFIX = '/Imaging Data/Acquisition Settings'
+SEQ_PATH_PREFIX = 'Imaging Data/Acquisition Settings'
 DEFAULT_DATE = datetime.now()
 
 
@@ -64,8 +64,8 @@ def catalog2i2b2(data_catalog_url, i2b2_db_url):
 
 def _save_sequence(i2b2_conn, seq, seq_type, encounter_num, patient_num, start_date, provider_id):
     # save sequence name
-    concept_path = path.join(SEQ_CONCEPT_PATH_PREFIX, 'name')
-    concept_cd = 'protocol_name'
+    concept_path = path.join(provider_id, SEQ_PATH_PREFIX, 'name')
+    concept_cd = provider_id + ':protocol_name'
     valtype_cd = 'T'
     tval_char = seq.name
     nval_num = None
@@ -103,8 +103,8 @@ def _save_sequence(i2b2_conn, seq, seq_type, encounter_num, patient_num, start_d
 
 def _save_sequence_parameter(i2b2_conn, sequence_name, param_name, param_type, param_val, encounter_num, provider_id,
                              start_date, patient_num):
-    concept_path = path.join(SEQ_CONCEPT_PATH_PREFIX, sequence_name, param_name)
-    concept_cd = param_name
+    concept_cd = provider_id + ':' + param_name
+    concept_path = path.join(provider_id, SEQ_PATH_PREFIX, sequence_name, param_name)
     if param_type == 'N':
         valtype_cd = 'N'
         tval_char = 'E'

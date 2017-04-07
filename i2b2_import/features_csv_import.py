@@ -14,8 +14,9 @@ from . import i2b2_connection
 #######################################################################################################################
 
 STRUCTURE_NAMES_COL = 'Structure Names'
-CONCEPT_PATH_PREFIX = '/Imaging Data/Features/Brain'
+CONCEPT_PATH_PREFIX = 'Imaging Data/Features/Brain'
 DEFAULT_DATE = datetime(1, 1, 1)
+MAX_CONCEPT_CD_LENGTH = 50
 
 
 #######################################################################################################################
@@ -81,8 +82,13 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None):
         row = row[1]  # (index, row) -> row
         struct_name = row[STRUCTURE_NAMES_COL]
         for concept_postfix in concept_columns:
-            concept_cd = struct_name[:20] + "_" + concept_postfix[:20]
-            concept_path = path.join(CONCEPT_PATH_PREFIX, struct_name, concept_postfix)
+            concept_name = struct_name + "_" + concept_postfix
+            concept_cd = str(provider_id + ':' + concept_name).rstrip().replace(' ', '_').lower()
+            if len(concept_cd) > MAX_CONCEPT_CD_LENGTH:
+                logging.warning("concept_cd %s is too long and will be chopped !" % concept_cd)
+                concept_cd = concept_cd[:47] + "..."
+
+            concept_path = path.join(provider_id, CONCEPT_PATH_PREFIX, struct_name, concept_postfix)
             val = row[concept_postfix]
             valtype_cd = utils.find_type(val)
             if valtype_cd == 'N':

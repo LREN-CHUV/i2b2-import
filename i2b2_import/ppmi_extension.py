@@ -10,7 +10,7 @@ from . import utils
 #######################################################################################################################
 
 DEFAULT_DATE = datetime(1, 1, 1)
-SEQ_CONCEPT_PATH_PREFIX = '/Imaging Data/Acquisition Settings'
+SEQ_PATH_PREFIX = 'Imaging Data/Acquisition Settings'
 
 
 #######################################################################################################################
@@ -42,8 +42,8 @@ def xml2i2b2(xml_file, db_conn):
     db_conn.save_visit(encounter_num, patient_num, subject_age_years, acquisition_date, site)
 
     for protocol in protocols:
-        concept_cd = protocol.attrib['term']
-        concept_path = join(SEQ_CONCEPT_PATH_PREFIX, concept_cd)
+        concept_cd = project_id + ':' + protocol.attrib['term']
+        concept_path = join(project_id, SEQ_PATH_PREFIX, protocol.attrib['term'])
         val = protocol.text
         if val:
             valtype_cd = utils.find_type(val)
