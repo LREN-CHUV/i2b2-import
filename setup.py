@@ -22,5 +22,5 @@ setup(
     },
     install_requires=['airflow', 'sqlalchemy', 'nose', 'psycopg2', 'pandas', 'defusedxml', 'xlrd'],
     include_package_data=True,
-    package_data={'default_data': ['default_data/default_structures_mapping.csv']}
+    package_data={'': ['default_data/default_structures_mapping.csv']}
 )
