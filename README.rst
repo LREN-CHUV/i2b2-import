@@ -31,6 +31,8 @@ use:
             to enable this flag. This will try to split PatientID into VisitID and PatientID.
             - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
             E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
+        * param regions_name_file: CSV file containing the abbreviated regions name in the first column and the full names
+            in the second column.
 
 or from a folder:
 
@@ -46,6 +48,8 @@ or from a folder:
             to enable this flag. This will try to split PatientID into VisitID and PatientID.
             - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
             E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a sessionID.
+        * param regions_name_file: CSV file containing the abbreviated regions name in the first column and the full names
+            in the second column.
 
 To import metadata from the data-catalog-db, use:
 

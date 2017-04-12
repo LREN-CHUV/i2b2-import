@@ -18,10 +18,10 @@ nosetests unit_test.py
 ret=$?
 
 # Remove DB container (if not on CircleCI)
-# if [ -z "$CIRCLECI" ] || [ "$CIRCLECI" = false ] ; then
-#     echo "Removing DB container..."
-#     docker rm -f ${db_docker_id_1}
-#     docker rm -f ${db_docker_id_2}
-# fi
+if [ -z "$CIRCLECI" ] || [ "$CIRCLECI" = false ] ; then
+    echo "Removing DB container..."
+    docker rm -f ${db_docker_id_1}
+    docker rm -f ${db_docker_id_2}
+fi
 
 exit "$ret"

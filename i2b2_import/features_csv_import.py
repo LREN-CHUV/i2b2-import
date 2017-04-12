@@ -1,6 +1,7 @@
 import logging
 import re
 from pandas import DataFrame
+from pandas import read_csv
 from pandas.io.common import EmptyDataError
 from datetime import datetime
 from glob import iglob
@@ -16,14 +17,13 @@ from . import i2b2_connection
 STRUCTURE_NAMES_COL = 'Structure Names'
 CONCEPT_PATH_PREFIX = 'Imaging Data/Features/Brain'
 DEFAULT_DATE = datetime(1, 1, 1)
-MAX_CONCEPT_CD_LENGTH = 50
 
 
 #######################################################################################################################
 # PUBLIC FUNCTIONS
 #######################################################################################################################
 
-def csv2db(file_path, i2b2_db_url, dataset, config=None):
+def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=None):
     """
     Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
     :param file_path: Path to the CSV file.
@@ -35,6 +35,8 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None):
         - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
         E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a
         sessionID.
+    :param regions_name_file: CSV file containing the abbreviated regions name in the first column and the full names
+        in the second column.
     :return:
     """
     try:
@@ -83,11 +85,8 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None):
         struct_name = row[STRUCTURE_NAMES_COL]
         for concept_postfix in concept_columns:
             concept_name = struct_name + "_" + concept_postfix
+            concept_fullname = _fullname_from_csv(struct_name, regions_name_file) + "_" + concept_postfix
             concept_cd = str(provider_id + ':' + concept_name).rstrip().replace(' ', '_').lower()
-            if len(concept_cd) > MAX_CONCEPT_CD_LENGTH:
-                logging.warning("concept_cd %s is too long and will be chopped !" % concept_cd)
-                concept_cd = concept_cd[:47] + "..."
-
             concept_path = path.join(provider_id, CONCEPT_PATH_PREFIX, struct_name, concept_postfix)
             val = row[concept_postfix]
             valtype_cd = utils.find_type(val)
@@ -98,7 +97,7 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None):
                 tval_char = val
                 nval_num = None
 
-            i2b2_conn.save_concept(concept_path, concept_cd)
+            i2b2_conn.save_concept(concept_path, concept_cd, concept_fullname)
             patient_num = i2b2_conn.get_patient_num(patient_ide, patient_ide_source, project_id)
             encounter_num = i2b2_conn.get_encounter_num(encounter_ide, encounter_ide_source, project_id, patient_ide,
                                                         patient_ide_source)
@@ -114,7 +113,7 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None):
     i2b2_conn.close()
 
 
-def folder2db(folder, i2b2_db_url, dataset, config=None):
+def folder2db(folder, i2b2_db_url, dataset, config=None, regions_name_file=None):
     """
     Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
     :param folder: Folder path
@@ -126,7 +125,24 @@ def folder2db(folder, i2b2_db_url, dataset, config=None):
         - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
         E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a
         sessionID.
+    :param regions_name_file: CSV file containing the abbreviated regions name in the first column and the full names
+        in the second column.
     :return:
     """
     for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
-        csv2db(file_path, i2b2_db_url, dataset, config)
+        csv2db(file_path, i2b2_db_url, dataset, config, regions_name_file)
+
+
+#######################################################################################################################
+# PRIVATE FUNCTIONS
+#######################################################################################################################
+
+def _fullname_from_csv(struct_name, csv_path):
+    try:
+        struct_matching = read_csv(csv_path)
+        for _, row in struct_matching.iterrows():
+            if row[0] == struct_name:
+                return row[1]
+    except OSError:
+        logging.warning("Fullname not found for brain structure %s" % struct_name)
+    return ''

@@ -58,5 +58,5 @@ class TestPublicFunctions:
         features_csv_import.csv2db(
             './data/features/PR00003/01/mt_al_mtflash3d_v2l_1mm/05/'
             'PR00003_Neuromorphics_Vols_MPMs_global_std_values.csv', I2B2_DB_URL, 'PPMI')
-        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 1587)
-        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ConceptDimension).count(), 1587)
+        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ObservationFact).count(), 324)
+        assert_greater_equal(self.i2b2_db_conn.db_session.query(self.i2b2_db_conn.ConceptDimension).count(), 324)

@@ -145,20 +145,26 @@ class Connection:
             visit.update_date = datetime.now()
             self.db_session.commit()
 
-    def save_concept(self, concept_path, concept_cd=None):
+    def save_concept(self, concept_path, concept_cd=None, concept_fullname=None):
         concept = self.db_session.query(self.ConceptDimension) \
             .filter_by(concept_path=concept_path) \
             .first()
         if not concept:
             concept = self.ConceptDimension(
-                concept_path=concept_path, concept_cd=concept_cd, import_date=datetime.now()
+                concept_path=concept_path, concept_cd=concept_cd, name_char=concept_fullname,
+                import_date=datetime.now()
             )
             self.db_session.add(concept)
             self.db_session.commit()
-        elif concept_cd not in [None,  '', concept.concept_cd]:
-            concept.concept_cd = concept_cd
-            concept.update_date = datetime.now()
-            self.db_session.commit()
+        else:
+            if concept_cd not in [None,  '', concept.concept_cd]:
+                concept.concept_cd = concept_cd
+                concept.update_date = datetime.now()
+                self.db_session.commit()
+            if concept_fullname not in [None,  '', concept.name_char]:
+                concept.name_char = concept_fullname
+                concept.update_date = datetime.now()
+                self.db_session.commit()
 
     def get_visit(self, encounter_num, patient_num):
         return self.db_session.query(self.VisitDimension) \
