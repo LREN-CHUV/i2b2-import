@@ -23,7 +23,8 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 #######################################################################################################################
 
-def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=None):
+def csv2db(file_path, i2b2_db_url, dataset, config=None,
+           regions_name_file='./default_data/default_structures_mapping.csv'):
     """
     Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
     :param file_path: Path to the CSV file.
@@ -113,7 +114,8 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=None)
     i2b2_conn.close()
 
 
-def folder2db(folder, i2b2_db_url, dataset, config=None, regions_name_file=None):
+def folder2db(folder, i2b2_db_url, dataset, config=None,
+              regions_name_file='./default_data/default_structures_mapping.csv'):
     """
     Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
     :param folder: Folder path
