@@ -10,6 +10,12 @@ from . import utils
 from . import i2b2_connection
 
 
+# Get default data from package folder
+pkg_dir, _ = path.split(__file__)
+DEFAULT_MAPPING_FILE = path.join(pkg_dir, "default_data", "default_structures_mapping.csv")
+print(open(DEFAULT_MAPPING_FILE).read())
+
+
 #######################################################################################################################
 # SETTINGS
 #######################################################################################################################
@@ -23,8 +29,7 @@ DEFAULT_DATE = datetime(1, 1, 1)
 # PUBLIC FUNCTIONS
 #######################################################################################################################
 
-def csv2db(file_path, i2b2_db_url, dataset, config=None,
-           regions_name_file='./default_data/default_structures_mapping.csv'):
+def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAULT_MAPPING_FILE):
     """
     Import brain features and other observation facts data from a CSV file into the I2B2 DB schema.
     :param file_path: Path to the CSV file.
@@ -114,8 +119,7 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None,
     i2b2_conn.close()
 
 
-def folder2db(folder, i2b2_db_url, dataset, config=None,
-              regions_name_file='./default_data/default_structures_mapping.csv'):
+def folder2db(folder, i2b2_db_url, dataset, config=None, regions_name_file=DEFAULT_MAPPING_FILE):
     """
     Import brain features and other observation facts data from a folder containing CSV files into the I2B2 DB schema.
     :param folder: Folder path
