@@ -57,6 +57,7 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
     logging.info("Connecting to database...")
     i2b2_conn = i2b2_connection.Connection(i2b2_db_url)
 
+    logging.info("Getting info (subject, visit, etc) from %s" % file_path)
     patient_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
     encounter_ide = None
 
@@ -78,9 +79,11 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
     encounter_ide_source = dataset
     project_id = dataset
 
+    logging.info("Reading data from %s" % file_path)
     try:
         df = DataFrame.from_csv(file_path, index_col=None)
     except EmptyDataError:
+        logging.warning("No data found in %s" % file_path)
         df = DataFrame()
 
     column_headers = list(df)
@@ -117,6 +120,7 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
             i2b2_conn.save_observation(encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd,
                                        tval_char, nval_num)
     i2b2_conn.close()
+    logging.info("I2B2 database connection closed")
 
 
 def folder2db(folder, i2b2_db_url, dataset, config=None, regions_name_file=DEFAULT_MAPPING_FILE):
