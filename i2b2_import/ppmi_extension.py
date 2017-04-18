@@ -43,7 +43,7 @@ def xml2i2b2(xml_file, db_conn):
 
     for protocol in protocols:
         concept_cd = project_id + ':' + protocol.attrib['term']
-        concept_path = join(project_id, SEQ_PATH_PREFIX, protocol.attrib['term'])
+        concept_path = join("/", project_id, SEQ_PATH_PREFIX, protocol.attrib['term'])
         val = protocol.text
         if val:
             valtype_cd = utils.find_type(val)

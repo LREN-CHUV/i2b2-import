@@ -93,7 +93,7 @@ def xlsx2i2b2(file_path, db_conn):
 
 def _save_acquisition_setting(db_conn, setting, value, encounter_num, patient_num):
     concept_cd = DATASET + ':' + setting
-    concept_path = join(DATASET, SEQ_PATH_PREFIX, setting)
+    concept_path = join("/", DATASET, SEQ_PATH_PREFIX, setting)
     if value:
         valtype_cd = utils.find_type(value)
         if valtype_cd == 'N':

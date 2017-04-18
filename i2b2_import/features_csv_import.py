@@ -96,7 +96,7 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
             concept_fullname = _fullname_from_csv(struct_name, regions_name_file) + " " + concept_postfix
             concept_name = struct_name + " " + concept_postfix
             concept_cd = str(provider_id + ':' + concept_name).rstrip().replace(' ', '_').lower()
-            concept_path = path.join(provider_id, CONCEPT_PATH_PREFIX, struct_name, concept_postfix)
+            concept_path = path.join("/", provider_id, CONCEPT_PATH_PREFIX, struct_name, concept_postfix)
             val = row[concept_postfix]
             valtype_cd = utils.find_type(val)
             if valtype_cd == 'N':
