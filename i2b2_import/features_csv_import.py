@@ -51,6 +51,8 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
     :return:
     """
 
+    config = config if config else []
+
     logging.info("Connecting to database...")
     i2b2_conn = i2b2_connection.Connection(i2b2_db_url)
 
