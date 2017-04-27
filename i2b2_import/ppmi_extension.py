@@ -17,7 +17,7 @@ SEQ_PATH_PREFIX = 'Imaging Data/Acquisition Settings'
 # PUBLIC FUNCTIONS
 #######################################################################################################################
 
-def xml2i2b2(xml_file, db_conn):
+def xml2i2b2(xml_file, i2b2_conn):
     tree = ElementTree.parse(xml_file)
     project_id = tree.find('./project/projectIdentifier').text
     ide_source = project_id
@@ -35,11 +35,11 @@ def xml2i2b2(xml_file, db_conn):
         acquisition_date = DEFAULT_DATE
     protocols = tree.findall('./project/subject/study/series/imagingProtocol/protocolTerm/protocol')
 
-    patient_num = db_conn.get_patient_num(subject_id, ide_source, project_id)
-    db_conn.save_patient(patient_num, subject_sex)
+    patient_num = i2b2_conn.get_patient_num(subject_id, ide_source, project_id)
+    i2b2_conn.save_patient(patient_num, subject_sex)
 
-    encounter_num = db_conn.get_encounter_num(study_id, ide_source, project_id, subject_id, ide_source)
-    db_conn.save_visit(encounter_num, patient_num, subject_age_years, acquisition_date, site)
+    encounter_num = i2b2_conn.get_encounter_num(study_id, ide_source, project_id, subject_id, ide_source)
+    i2b2_conn.save_visit(encounter_num, patient_num, subject_age_years, acquisition_date, site)
 
     for protocol in protocols:
         concept_cd = project_id + ':' + protocol.attrib['term']
@@ -53,6 +53,6 @@ def xml2i2b2(xml_file, db_conn):
             else:
                 tval_char = val
                 nval_num = None
-            db_conn.save_concept(concept_path, concept_cd)
-            db_conn.save_observation(encounter_num, concept_cd, ide_source, acquisition_date, patient_num, valtype_cd,
-                                     tval_char, nval_num)
+            i2b2_conn.save_concept(concept_path, concept_cd)
+            i2b2_conn.save_observation(encounter_num, concept_cd, ide_source, acquisition_date, patient_num,
+                                       valtype_cd, tval_char, nval_num)

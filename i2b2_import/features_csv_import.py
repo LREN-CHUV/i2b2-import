@@ -10,12 +10,6 @@ from . import utils
 from . import i2b2_connection
 
 
-# Get default data from package folder
-pkg_dir, _ = path.split(__file__)
-DEFAULT_MAPPING_FILE = path.join(pkg_dir, "default_data", "default_structures_mapping.csv")
-print(open(DEFAULT_MAPPING_FILE).read())
-
-
 #######################################################################################################################
 # SETTINGS
 #######################################################################################################################
@@ -23,6 +17,10 @@ print(open(DEFAULT_MAPPING_FILE).read())
 STRUCTURE_NAMES_COL = 'Structure Names'
 CONCEPT_PATH_PREFIX = 'Imaging Data/Features/Brain'
 DEFAULT_DATE = datetime(1, 1, 1)
+
+# Get default data from package folder
+pkg_dir, _ = path.split(__file__)
+DEFAULT_MAPPING_FILE = path.join(pkg_dir, "default_data", "default_structures_mapping.csv")
 
 
 #######################################################################################################################
@@ -35,24 +33,23 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
     :param file_path: Path to the CSV file.
     :param i2b2_db_url: URL of the I2B2 DB.
     :param dataset: Data set name.
-    :param config: A few settings. It is a dictionary that accepts the following fields:
-        - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
-        to enable this flag. This will try to split PatientID into VisitID and PatientID.
-        - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a
-        sessionID.
+    :param config: List of flags:
+        - boost: (optional) When enabled, we consider that all the files from a same folder share the same meta-data.
+        When enabled, the processing is (about 2 times) faster. This option is enabled by default.
+        - session_id_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole
+        study).
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session
+        ID.
+        - visit_id_in_patient_id: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a
+        case, you have to enable this flag. This will try to split PatientID into VisitID and PatientID.
+        - visit_id_from_path: Enable this flag to get the visit ID from the folder hierarchy instead of DICOM meta-data
+        (e.g. can be useful for PPMI).
+        - repetition_from_path: Enable this flag to get the repetition ID from the folder hierarchy instead of DICOM
+        meta-data (e.g. can be useful for PPMI).
     :param regions_name_file: CSV file containing the abbreviated regions name in the first column and the full names
         in the second column.
     :return:
     """
-    try:
-        pid_in_vid = config['pid_in_vid']
-    except (KeyError, TypeError):
-        pid_in_vid = False
-    try:
-        sid_by_patient = config['sid_by_patient']
-    except (KeyError, TypeError):
-        sid_by_patient = False
 
     logging.info("Connecting to database...")
     i2b2_conn = i2b2_connection.Connection(i2b2_db_url)
@@ -61,15 +58,15 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
     patient_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
     encounter_ide = None
 
-    if pid_in_vid:
+    if 'visit_id_in_patient_id' in config:
         try:
             encounter_ide, patient_ide = utils.split_patient_id(patient_ide)
         except TypeError:
             encounter_ide = None
-    if not pid_in_vid or not encounter_ide:
+    if 'visit_id_in_patient_id' not in config or not encounter_ide:
         try:
             encounter_ide = str(re.findall('/([^/]+?)/[^/]+?/[^/]+?/[^/]+?\.csv', file_path)[0])
-            if sid_by_patient:  # If the Study ID is given at the patient level (e.g. for LREN), here is a little trick
+            if 'session_id_by_patient' in config:
                 encounter_ide = patient_ide + "_" + encounter_ide
         except AttributeError:
             encounter_ide = None
@@ -129,12 +126,19 @@ def folder2db(folder, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
     :param folder: Folder path
     :param i2b2_db_url: URL of the I2B2 DB.
     :param dataset: Data set name.
-    :param config: A few settings. It is a dictionary that accepts the following fields:
-        - pid_in_vid: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a case, you
-        to enable this flag. This will try to split PatientID into VisitID and PatientID.
-        - sid_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole study).
-        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a
-        sessionID.
+    :param config: List of flags:
+        - boost: (optional) When enabled, we consider that all the files from a same folder share the same meta-data.
+        When enabled, the processing is (about 2 times) faster. This option is enabled by default.
+        - session_id_by_patient: Rarely, a data set might use study IDs which are unique by patient (not for the whole
+        study).
+        E.g.: LREN data. In such a case, you have to enable this flag. This will use PatientID + StudyID as a session
+        ID.
+        - visit_id_in_patient_id: Rarely, a data set might mix patient IDs and visit IDs. E.g. : LREN data. In such a
+        case, you have to enable this flag. This will try to split PatientID into VisitID and PatientID.
+        - visit_id_from_path: Enable this flag to get the visit ID from the folder hierarchy instead of DICOM meta-data
+        (e.g. can be useful for PPMI).
+        - repetition_from_path: Enable this flag to get the repetition ID from the folder hierarchy instead of DICOM
+        meta-data (e.g. can be useful for PPMI).
     :param regions_name_file: CSV file containing the abbreviated regions name in the first column and the full names
         in the second column.
     :return:

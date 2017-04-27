@@ -64,7 +64,7 @@ ACQUISITION_SETTINGS = [
 ]
 
 
-def xlsx2i2b2(file_path, db_conn):
+def xlsx2i2b2(file_path, i2b2_conn):
 
     logging.info("reading...")
     df = read_excel(file_path)
@@ -81,17 +81,17 @@ def xlsx2i2b2(file_path, db_conn):
     logging.info("storing metadata to I2B2 database...")
 
     for _, row in df.iterrows():
-        patient_num = db_conn.get_patient_num(row['CLM_R_CODE'], DATASET, DATASET)
-        db_conn.save_patient(patient_num)
+        patient_num = i2b2_conn.get_patient_num(row['CLM_R_CODE'], DATASET, DATASET)
+        i2b2_conn.save_patient(patient_num)
 
-        encounter_num = db_conn.get_encounter_num(row['ID_EVENT'], DATASET, DATASET, row['CLM_R_CODE'], DATASET)
-        db_conn.save_visit(encounter_num, patient_num, location_cd=SITE)
+        encounter_num = i2b2_conn.get_encounter_num(row['ID_EVENT'], DATASET, DATASET, row['CLM_R_CODE'], DATASET)
+        i2b2_conn.save_visit(encounter_num, patient_num, location_cd=SITE)
 
         for setting in ACQUISITION_SETTINGS:
-            _save_acquisition_setting(db_conn, setting, row[setting], encounter_num, patient_num)
+            _save_acquisition_setting(i2b2_conn, setting, row[setting], encounter_num, patient_num)
 
 
-def _save_acquisition_setting(db_conn, setting, value, encounter_num, patient_num):
+def _save_acquisition_setting(i2b2_conn, setting, value, encounter_num, patient_num):
     concept_cd = DATASET + ':' + setting
     concept_path = join("/", DATASET, SEQ_PATH_PREFIX, setting)
     if value:
@@ -102,6 +102,6 @@ def _save_acquisition_setting(db_conn, setting, value, encounter_num, patient_nu
         else:
             tval_char = value
             nval_num = None
-        db_conn.save_concept(concept_path, concept_cd)
-        db_conn.save_observation(encounter_num, concept_cd, DATASET, DEFAULT_DATE, patient_num, valtype_cd,
-                                 tval_char, nval_num)
+        i2b2_conn.save_concept(concept_path, concept_cd)
+        i2b2_conn.save_observation(encounter_num, concept_cd, DATASET, DEFAULT_DATE, patient_num, valtype_cd,
+                                   tval_char, nval_num)

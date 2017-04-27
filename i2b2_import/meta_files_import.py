@@ -31,6 +31,8 @@ def meta2i2b2(file_path, i2b2_db_url, dataset):
         edsd_extension.txt2i2b2(file_path, i2b2_conn)
     elif dataset.upper() == 'CLM':
         clm_extension.xlsx2i2b2(file_path, i2b2_conn)
+    else:
+        logging.info("No implementation for this dataset !")
 
     i2b2_conn.close()
 
@@ -43,13 +45,16 @@ def folder2db(folder, i2b2_db_url, dataset):
     :param dataset: Dataset ID (each dataset uses its own meta-data files format)
     :return:
     """
-    file_extension = ''
+
     if dataset.upper() == 'PPMI':
         file_extension = '.xml'
     elif dataset.upper() == 'EDSD':
         file_extension = '.txt'
     elif dataset.upper() == 'CLM':
         file_extension = '.xlsx'
+    else:
+        logging.info("No implementation for this dataset !")
+        return None
 
     for file_path in iglob(path.join(folder, "**/*" + file_extension), recursive=True):
         meta2i2b2(file_path, i2b2_db_url, dataset)

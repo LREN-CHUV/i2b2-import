@@ -6,7 +6,7 @@ from . import utils
 DATASET = 'EDSD'
 
 
-def txt2i2b2(file_path, db_conn):
+def txt2i2b2(file_path, i2b2_conn):
     info = _extract_info(file_path)
     patient_ide = info['PatientName']  # Sometimes the patient ID is stored in PatientName field for EDSD
     patient_sex = info['PatientSex']
@@ -15,11 +15,11 @@ def txt2i2b2(file_path, db_conn):
     visit_ide = patient_ide + '_' + study_id
     acq_date = utils.datetime_from_dcm_date(info['AcquisitionDate'])
 
-    encounter_num = db_conn.get_encounter_num(visit_ide, DATASET, DATASET, patient_ide, DATASET)
-    patient_num = db_conn.get_patient_num(patient_ide, DATASET, DATASET)
+    encounter_num = i2b2_conn.get_encounter_num(visit_ide, DATASET, DATASET, patient_ide, DATASET)
+    patient_num = i2b2_conn.get_patient_num(patient_ide, DATASET, DATASET)
 
-    db_conn.save_visit(encounter_num, patient_num, patient_age, acq_date)
-    db_conn.save_patient(patient_num, patient_sex)
+    i2b2_conn.save_visit(encounter_num, patient_num, patient_age, acq_date)
+    i2b2_conn.save_patient(patient_num, patient_sex)
 
     # TODO: Complete it ! E.g. save sequence info, etc.
 
