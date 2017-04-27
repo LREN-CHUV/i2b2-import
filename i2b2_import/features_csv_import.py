@@ -3,7 +3,6 @@ import re
 from pandas import DataFrame
 from pandas import read_csv
 from pandas.io.common import EmptyDataError
-from datetime import datetime
 from glob import iglob
 from os import path
 from . import utils
@@ -16,7 +15,6 @@ from . import i2b2_connection
 
 STRUCTURE_NAMES_COL = 'Structure Names'
 CONCEPT_PATH_PREFIX = 'Imaging Data/Features/Brain'
-DEFAULT_DATE = datetime(1, 1, 1)
 
 # Get default data from package folder
 pkg_dir, _ = path.split(__file__)
@@ -115,7 +113,7 @@ def csv2db(file_path, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
                 if not start_date:
                     raise AttributeError
             except AttributeError:
-                start_date = DEFAULT_DATE
+                start_date = utils.DEFAULT_DATE
             i2b2_conn.save_observation(encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd,
                                        tval_char, nval_num)
     i2b2_conn.close()
