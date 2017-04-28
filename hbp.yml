@@ -47,9 +47,9 @@ testing:
   unit_testing: []
 
 release_management:
-  current_version: 1.5.18
-  current_code_release: https://github.com/HBPMedical/i2b2-import/archive/1.5.18.zip
-  current_binary_release: https://pypi.python.org/pypi/i2b2-import/1.5.18
+  current_version: 1.5.19
+  current_code_release: https://github.com/HBPMedical/i2b2-import/archive/1.5.19.zip
+  current_binary_release: https://pypi.python.org/pypi/i2b2-import/1.5.19
   release_script: 'publish.sh'
 
 continuous_integration:
