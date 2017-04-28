@@ -5,7 +5,7 @@ from . import utils
 
 
 DATASET = 'edsd'
-ACQUISITION_SETTINGS = ['Manufacturer', 'ManufacturerModelName' 'MagneticFieldStrength']
+ACQUISITION_SETTINGS = ['Manufacturer', 'ManufacturerModelName', 'MagneticFieldStrength']
 ACQUISITION_CONCEPT_PREFIX = join("/", DATASET, "Imaging Data/Acquisition Settings")
 
 
