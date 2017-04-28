@@ -14,7 +14,7 @@ def txt2i2b2(file_path, i2b2_conn):
     patient_ide = info['PatientName']  # Sometimes the patient ID is stored in PatientName field for EDSD
     patient_sex = info['PatientSex']
     patient_age = utils.compute_age_years(int(info['PatientAge'][:-1]), info['PatientAge'][-1])
-    study_id = 'V' + info['StudyId'] if len(info['StudyId']) > 1 else 'V0' + info['StudyId']
+    study_id = 'V' + info['StudyID'] if len(info['StudyID']) > 1 else 'V0' + info['StudyID']
     visit_ide = patient_ide + '_' + study_id
     acq_date = utils.datetime_from_dcm_date(info['AcquisitionDate'])
     birthdate = utils.datetime_from_dcm_date(info['PatientBirthdate'])
