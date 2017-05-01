@@ -44,7 +44,9 @@ code_quality_checks:
     url: https://landscape.io/github/LREN-CHUV/i2b2-import/master
 
 testing:
-  unit_testing: []
+  unit_testing:
+    - sources: /tests
+    - command: /tests/tesh.sh
 
 release_management:
   current_version: 1.5.20
