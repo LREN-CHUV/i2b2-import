@@ -17,6 +17,8 @@ ACQUISITION_CONCEPT_PREFIX = join("/", DATASET, "Imaging Data/Acquisition Settin
 def txt2i2b2(file_path, i2b2_conn):
     info = _extract_info(file_path)
     patient_ide = _patient_ide_from_path(file_path)
+    if not patient_ide:
+        return None
     visit_ide = patient_ide + '_V' + info['StudyID'] if len(info['StudyID']) > 1 else 'V0' + info['StudyID']
 
     patient_sex = None
@@ -89,12 +91,15 @@ def txt2i2b2(file_path, i2b2_conn):
 
 
 def _patient_ide_from_path(file_path):
-    path_info = split(r'[+.]+', basename(file_path))
-    prefix = path_info[0] + '+'
-    site = path_info[2]
-    sid_per_site = path_info[3]
-    proto = path_info[4]
-    return prefix + site + proto + sid_per_site
+    try:
+        path_info = split(r'[+.]+', basename(file_path))
+        prefix = path_info[0] + '+'
+        site = path_info[2]
+        sid_per_site = path_info[3]
+        proto = path_info[4]
+        return prefix + site + proto + sid_per_site
+    except IndexError:
+        logging.warning("Cannot parse file_path %s (this might happen on non-T1-weighted metadata)", file_path)
 
 
 def _extract_info(file_path):
