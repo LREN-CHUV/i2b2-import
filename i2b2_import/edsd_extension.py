@@ -7,6 +7,8 @@ from os.path import basename
 from . import utils
 
 
+FILES_ENCODING = "ISO-8859-1"
+
 DATASET = 'edsd'
 ACQUISITION_SETTINGS = ['Manufacturer', 'ManufacturerModelName', 'MagneticFieldStrength']
 ACQUISITION_CONCEPT_PREFIX = join("/", DATASET, "Imaging Data/Acquisition Settings")
@@ -96,7 +98,7 @@ def _patient_ide_from_path(file_path):
 
 
 def _extract_info(file_path):
-    f = open(file_path, 'r')
+    f = open(file_path, 'r', encoding=FILES_ENCODING)
     d = {}
     for line in f.readlines():
         line = line.strip()
