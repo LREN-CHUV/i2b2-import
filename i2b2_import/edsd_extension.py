@@ -109,7 +109,7 @@ def _visit_ide_from_path(file_path):
         site = path_info[2]
         sid_per_site = path_info[3]
         proto = path_info[4]
-        visit_num = path_info[6]
+        visit_num = path_info[7]
         return prefix + site + proto + sid_per_site + visit_num
     except IndexError:
         logging.warning("Cannot parse file_path %s (this might happen on non-T1-weighted metadata)", file_path)
