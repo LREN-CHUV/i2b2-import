@@ -19,7 +19,12 @@ def txt2i2b2(file_path, i2b2_conn):
     patient_ide = _patient_ide_from_path(file_path)
     if not patient_ide:
         return None
-    visit_ide = patient_ide + '_V' + info['StudyID'] if len(info['StudyID']) > 1 else 'V0' + info['StudyID']
+
+    study_num = info['StudyID']
+    study_id_prefix = '_V'
+    if len(study_num) > 1:
+        study_id_prefix = study_id_prefix + '0'
+    visit_ide = patient_ide + study_id_prefix + study_num
 
     patient_sex = None
     patient_age = None
