@@ -19,12 +19,7 @@ def txt2i2b2(file_path, i2b2_conn):
     patient_ide = _patient_ide_from_path(file_path)
     if not patient_ide:
         return None
-
-    study_num = info['StudyID']
-    study_id_prefix = '_V'
-    if len(study_num) > 1:
-        study_id_prefix = study_id_prefix + '0'
-    visit_ide = patient_ide + study_id_prefix + study_num
+    visit_ide = _visit_ide_from_path(file_path)
 
     patient_sex = None
     patient_age = None
@@ -103,6 +98,19 @@ def _patient_ide_from_path(file_path):
         sid_per_site = path_info[3]
         proto = path_info[4]
         return prefix + site + proto + sid_per_site
+    except IndexError:
+        logging.warning("Cannot parse file_path %s (this might happen on non-T1-weighted metadata)", file_path)
+
+
+def _visit_ide_from_path(file_path):
+    try:
+        path_info = split(r'[+.]+', basename(file_path))
+        prefix = path_info[0] + '+'
+        site = path_info[2]
+        sid_per_site = path_info[3]
+        proto = path_info[4]
+        visit_num = path_info[6]
+        return prefix + site + proto + sid_per_site + visit_num
     except IndexError:
         logging.warning("Cannot parse file_path %s (this might happen on non-T1-weighted metadata)", file_path)
 
