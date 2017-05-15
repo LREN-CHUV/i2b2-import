@@ -37,7 +37,7 @@ code_repositories:
 
 code_quality_checks:
   codacy:
-    badge: https://api.codacy.com/project/badge/Grade/850854199e9c4fbca8386a10bf1c4867
+    badge: https://api.codacy.com/project/badge/Grade/f9c92a26fc2142579d3d2109e16bc606
     url: "https://www.codacy.com/app/hbp-mip/i2b2-import?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LREN-CHUV/i2b2-import&amp;utm_campaign=Badge_Grade"
   landscape:
     badge: "https://landscape.io/github/LREN-CHUV/i2b2-import/master/landscape.svg?style=flat"
