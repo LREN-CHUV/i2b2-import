@@ -20,7 +20,7 @@ setup(
     extras_require={
         'test': ['unittest'],
     },
-    install_requires=['airflow', 'sqlalchemy', 'nose', 'psycopg2', 'pandas', 'defusedxml', 'xlrd'],
+    install_requires=['apache-airflow', 'sqlalchemy', 'nose', 'psycopg2', 'pandas', 'defusedxml', 'xlrd'],
     include_package_data=True,
     package_data={'': ['default_data/default_structures_mapping.csv']}
 )
