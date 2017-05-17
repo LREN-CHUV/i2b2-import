@@ -1,4 +1,4 @@
-|CircleCI| |Codacy Badge| |License| |CHUV|
+|CHUV| |License| |Codacy Badge| |CircleCI|
 
 I2B2 Import
 ===========
@@ -99,11 +99,11 @@ Run ``./publish.sh``.
 
 (This builds the project prior to pushing it).
 
-.. |CircleCI| image:: https://circleci.com/gh/LREN-CHUV/i2b2-import.svg?style=svg
-   :target: https://circleci.com/gh/LREN-CHUV/i2b2-import
-.. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/850854199e9c4fbca8386a10bf1c4867
-   :target: https://www.codacy.com/app/mirco-nasuti/i2b2-import?utm_source=github.com&utm_medium=referral&utm_content=LREN-CHUV/i2b2-import&utm_campaign=Badge_Grade
-.. |License| image:: https://img.shields.io/badge/license-Apache--2.0-blue.svg
-   :target: https://github.com/LREN-CHUV/i2b2-import/blob/master/LICENSE
 .. |CHUV| image:: https://img.shields.io/badge/CHUV-LREN-AF4C64.svg
    :target: https://www.unil.ch/lren/en/home.html
+.. |License| image:: https://img.shields.io/badge/license-Apache--2.0-blue.svg
+   :target: https://github.com/LREN-CHUV/i2b2-import/blob/master/LICENSE
+.. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/f9c92a26fc2142579d3d2109e16bc606
+   :target: https://www.codacy.com/app/hbp-mip/i2b2-import?utm_source=github.com&utm_medium=referral&utm_content=LREN-CHUV/i2b2-import&utm_campaign=Badge_Grade
+.. |CircleCI| image:: https://circleci.com/gh/LREN-CHUV/i2b2-import.svg?style=svg
+   :target: https://circleci.com/gh/LREN-CHUV/i2b2-import
