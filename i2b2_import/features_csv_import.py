@@ -3,7 +3,8 @@ import re
 from pandas import DataFrame
 from pandas import read_csv
 from pandas.io.common import EmptyDataError
-from glob import iglob
+import fnmatch
+import os
 from os import path
 from . import utils
 from . import i2b2_connection
@@ -143,7 +144,11 @@ def folder2db(folder, i2b2_db_url, dataset, config=None, regions_name_file=DEFAU
         in the second column.
     :return:
     """
-    for file_path in iglob(path.join(folder, "**/*.csv"), recursive=True):
+    matches = []
+    for root, dirnames, filenames in os.walk(folder):
+        for filename in fnmatch.filter(filenames, '*.csv'):
+            matches.append(os.path.join(root, filename))
+    for file_path in matches:
         csv2db(file_path, i2b2_db_url, dataset, config, regions_name_file)
 
 

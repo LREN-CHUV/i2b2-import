@@ -1,6 +1,6 @@
 import logging
-from glob import iglob
-from os import path
+import fnmatch
+import os
 
 from . import ppmi_extension
 from . import edsd_extension
@@ -56,5 +56,9 @@ def folder2db(folder, i2b2_db_url, dataset):
         logging.info("No implementation for this dataset !")
         return None
 
-    for file_path in iglob(path.join(folder, "**/*" + file_extension), recursive=True):
+    matches = []
+    for root, dirnames, filenames in os.walk(folder):
+        for filename in fnmatch.filter(filenames, '*' + file_extension):
+            matches.append(os.path.join(root, filename))
+    for file_path in matches:
         meta2i2b2(file_path, i2b2_db_url, dataset)
