@@ -104,13 +104,13 @@ class Connection:
                 observation.nval_num = nval_num
                 observation.update_date = datetime.now()
 
-    def save_patient(self, patient_num, sex_cd=None, age_in_years_num=None, birth_date=None):
+    def save_patient(self, patient_num, sex_cd=None, birth_date=None):
         patient = self.db_session.query(self.PatientDimension) \
             .filter_by(patient_num=patient_num) \
             .first()
         if not patient:
             patient = self.PatientDimension(
-                patient_num=patient_num, sex_cd=sex_cd, age_in_years_num=age_in_years_num, birth_date=birth_date,
+                patient_num=patient_num, sex_cd=sex_cd, birth_date=birth_date,
                 import_date=datetime.now()
             )
             self.db_session.add(patient)
