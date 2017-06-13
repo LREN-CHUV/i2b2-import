@@ -97,12 +97,15 @@ class Connection:
             if valtype_cd not in [None, '', observation.valtype_cd]:
                 observation.valtype_cd = valtype_cd
                 observation.update_date = datetime.now()
+                self.db_session.commit()
             if tval_char not in [None, '', observation.tval_char]:
                 observation.tval_char = tval_char
                 observation.update_date = datetime.now()
+                self.db_session.commit()
             if nval_num not in [None, observation.nval_num]:
                 observation.nval_num = nval_num
                 observation.update_date = datetime.now()
+                self.db_session.commit()
 
     def save_patient(self, patient_num, sex_cd=None, birth_date=None):
         patient = self.db_session.query(self.PatientDimension) \
