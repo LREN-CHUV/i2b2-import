@@ -59,7 +59,7 @@ class Connection:
         if not patient:
             patient = self.PatientMapping(patient_ide_source=patient_ide_source, patient_ide=patient_ide,
                                           project_id=project_id, patient_num=self.new_patient_num())
-            self.db_session.add(patient)
+            self.db_session.merge(patient)
             self.db_session.commit()
         return patient.patient_num
 
@@ -73,7 +73,7 @@ class Connection:
                                           project_id=project_id, patient_ide=patient_ide,
                                           patient_ide_source=patient_ide_source,
                                           encounter_num=self.new_encounter_num())
-            self.db_session.add(visit)
+            self.db_session.merge(visit)
             self.db_session.commit()
         return visit.encounter_num
 
@@ -91,7 +91,7 @@ class Connection:
                 tval_char=tval_char, nval_num=nval_num, import_date=datetime.now(),
                 text_search_index=self.new_text_search_index()
             )
-            self.db_session.add(observation)
+            self.db_session.merge(observation)
             self.db_session.commit()
         else:
             if valtype_cd not in [None, '', observation.valtype_cd]:
@@ -116,7 +116,7 @@ class Connection:
                 patient_num=patient_num, sex_cd=sex_cd, birth_date=birth_date,
                 import_date=datetime.now()
             )
-            self.db_session.add(patient)
+            self.db_session.merge(patient)
             self.db_session.commit()
         else:
             if sex_cd not in [None, '', patient.sex_cd]:
@@ -137,7 +137,7 @@ class Connection:
                 encounter_num=encounter_num, patient_num=patient_num, patient_age=patient_age, start_date=start_date,
                 location_cd=location_cd, import_date=datetime.now()
             )
-            self.db_session.add(visit)
+            self.db_session.merge(visit)
             self.db_session.commit()
         elif start_date not in [None, visit.start_date]:
             visit.start_date = start_date
@@ -157,7 +157,7 @@ class Connection:
                 concept_path=concept_path, concept_cd=concept_cd, name_char=concept_fullname,
                 import_date=datetime.now()
             )
-            self.db_session.add(concept)
+            self.db_session.merge(concept)
             self.db_session.commit()
         else:
             if concept_cd not in [None,  '', concept.concept_cd]:
