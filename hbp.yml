@@ -49,9 +49,9 @@ testing:
     - command: /tests/tesh.sh
 
 release_management:
-  current_version: 1.5.30
-  current_code_release: https://github.com/HBPMedical/i2b2-import/archive/1.5.30.zip
-  current_binary_release: https://pypi.python.org/pypi/i2b2-import/1.5.30
+  current_version: 1.5.31
+  current_code_release: https://github.com/HBPMedical/i2b2-import/archive/1.5.31.zip
+  current_binary_release: https://pypi.python.org/pypi/i2b2-import/1.5.31
   release_script: 'publish.sh'
 
 continuous_integration:
