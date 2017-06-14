@@ -1,4 +1,5 @@
 import logging
+import os
 
 from nose.tools import assert_greater_equal
 from sqlalchemy.exc import IntegrityError
@@ -10,8 +11,15 @@ from i2b2_import import meta_files_import
 from i2b2_import import data_catalog_import
 
 
-DATA_CATALOG_DB_URL = 'postgresql://postgres:postgres@localhost:5433/postgres'
-I2B2_DB_URL = 'postgresql://postgres:postgres@localhost:5434/postgres'
+if 'DATA_CATALOG_DB_URL' in os.environ:
+    DATA_CATALOG_DB_URL = os.environ['DATA_CATALOG_DB_URL']
+else:
+    DATA_CATALOG_DB_URL = 'postgresql://postgres:postgres@localhost:5433/postgres'
+
+if 'I2B2_DB_URL' in os.environ:
+    I2B2_DB_URL = os.environ['I2B2_DB_URL']
+else:
+    I2B2_DB_URL = 'postgresql://postgres:postgres@localhost:5434/postgres'
 
 
 class TestPublicFunctions:

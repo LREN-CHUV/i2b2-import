@@ -1,0 +1,72 @@
+version: '2'
+
+services:
+
+  db:
+    image: "postgres:9.6.2-alpine"
+    container_name: "db"
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=test
+
+  wait_dbs:
+    image: "waisbrot/wait"
+    links:
+      - "db:db"
+    environment:
+      - TARGETS=db:5432
+
+  create_dbs:
+    image: "hbpmip/create-databases:1.0.0"
+    restart: "no"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_ADMIN_USER: postgres
+      DB_ADMIN_PASSWORD: test
+      DB1: data_catalog
+      USER1: dc
+      PASSWORD1: dc
+      DB2: i2b2
+      USER2: i2b2
+      PASSWORD2: i2b2
+    depends_on:
+      - wait_dbs
+
+  data_catalog_setup:
+    image: "hbpmip/data-catalog-setup:1.5.22"
+    container_name: "data-catalog-setup"
+    command: upgrade head
+    environment:
+      - DB_URL=postgresql://dc:dc@db:5432/data_catalog
+    links:
+      - "db:db"
+
+  i2b2_setup:
+    image: "hbpmip/i2b2-setup:1.4.7"
+    container_name: "i2b2-setup"
+    command: upgrade head
+    environment:
+      - DB_URL=postgresql://i2b2:i2b2@db:5432/i2b2
+    links:
+      - "db:db"
+
+  python34_tests:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile-3.4
+    environment:
+      - DATA_CATALOG_DB_URL=postgresql://dc:dc@db:5432/data_catalog
+      - I2B2_DB_URL=postgresql://i2b2:i2b2@db:5432/i2b2
+    links:
+      - "db:db"
+
+  python35_tests:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile-3.5
+    environment:
+      - DATA_CATALOG_DB_URL=postgresql://dc:dc@db:5432/data_catalog
+      - I2B2_DB_URL=postgresql://i2b2:i2b2@db:5432/i2b2
+    links:
+      - "db:db"

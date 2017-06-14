@@ -18,6 +18,7 @@ export WORKSPACE=$(get_script_dir)
 # Build
 echo "Build the project..."
 ./build.sh
+./tests/test.sh
 echo "[ok] Done"
 
 count=$(git status --porcelain | wc -l)
@@ -49,8 +50,7 @@ select_part() {
 git pull --tags
 # Look for a version tag in Git. If not found, ask the user to provide one
 [ $(git tag --points-at HEAD | wc -l) == 1 ] || (
-  latest_version=$(git describe --abbrev=00 || \
-    (bumpversion --dry-run --list patch | grep current_version | sed -r s,"^.*=",,) || echo '0.0.1')
+  latest_version=$(bumpversion --dry-run --list patch | grep current_version | sed -r s,"^.*=",, || echo '0.0.1')
   echo
   echo "Current commit has not been tagged with a version. Latest known version is $latest_version."
   echo
@@ -77,6 +77,7 @@ updated_version=$(bumpversion --dry-run --list patch | grep current_version | se
 # Build again to update the version
 echo "Build the project for distribution..."
 ./build.sh
+./tests/test.sh
 echo "[ok] Done"
 
 # Push on PyPi

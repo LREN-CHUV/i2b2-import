@@ -1,0 +1,14 @@
+FROM hbpmip/airflow-test-py35:1.8.1-0
+
+COPY tests/data/ /src/tests/data/
+COPY requirements-dev.txt README.rst setup.cfg setup.py /src/
+RUN pip install -r /src/requirements-dev.txt
+
+COPY i2b2_import/ /src/i2b2_import/
+RUN pip install -e /src/
+
+COPY tests/unit_test.py /src/tests/
+
+WORKDIR /src/tests/
+
+ENTRYPOINT ["/bin/sh", "-c", "nosetests", "unit_test.py"]

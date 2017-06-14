@@ -1,7 +1,6 @@
 import logging
-from glob import iglob
-from os import path
 
+from . import recurse_in_dir_and_apply_fn
 from . import ppmi_extension
 from . import edsd_extension
 from . import clm_extension
@@ -56,5 +55,5 @@ def folder2db(folder, i2b2_db_url, dataset):
         logging.info("No implementation for this dataset !")
         return None
 
-    for file_path in iglob(path.join(folder, "**/*" + file_extension), recursive=True):
-        meta2i2b2(file_path, i2b2_db_url, dataset)
+    recurse_in_dir_and_apply_fn(folder, "*" + file_extension,
+                                lambda file_path: meta2i2b2(file_path, i2b2_db_url, dataset))
