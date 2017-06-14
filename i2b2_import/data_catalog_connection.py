@@ -51,7 +51,7 @@ class Connection:
         if not participant:
             participant = self.ParticipantMapping(dataset=dataset, name=participant_name,
                                                   participant_id=self.new_participant_id())
-            self.db_session.add(participant)
+            self.db_session.merge(participant)
             self.db_session.commit()
         return participant.participant_id
 
@@ -72,7 +72,7 @@ class Connection:
         if not visit:
             logging.debug("VISIT : visit was not found in db")
             visit = self.VisitMapping(dataset=dataset, name=visit_name, visit_id=self.new_visit_id())
-            self.db_session.add(visit)
+            self.db_session.merge(visit)
             self.db_session.commit()
         logging.debug("returning visit_id "+str(visit.visit_id))
         return visit.visit_id
@@ -83,7 +83,7 @@ class Connection:
             name=session_name, visit_id=visit_id).one_or_none()
         if not session:
             session = self.Session(name=session_name, visit_id=visit_id)
-            self.db_session.add(session)
+            self.db_session.merge(session)
             self.db_session.commit()
         return session.id
 
@@ -93,7 +93,7 @@ class Connection:
             name=sequence_name, session_id=session_id).one_or_none()
         if not sequence:
             sequence = self.Sequence(name=sequence_name, session_id=session_id)
-            self.db_session.add(sequence)
+            self.db_session.merge(sequence)
             self.db_session.commit()
         return sequence.id
 
@@ -103,7 +103,7 @@ class Connection:
             name=repetition_name, sequence_id=sequence_id).one_or_none()
         if not repetition:
             repetition = self.Repetition(name=repetition_name, sequence_id=sequence_id)
-            self.db_session.add(repetition)
+            self.db_session.merge(repetition)
             self.db_session.commit()
         return repetition.id
 
