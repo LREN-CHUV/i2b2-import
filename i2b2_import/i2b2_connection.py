@@ -33,18 +33,6 @@ class Connection:
     def close(self):
         self.db_session.close()
 
-    def new_patient_num(self):
-        try:
-            return self.db_session.query(sql_func.max(self.PatientMapping.patient_num).label('max')).one().max + 1
-        except TypeError:
-            return 1
-
-    def new_encounter_num(self):
-        try:
-            return self.db_session.query(sql_func.max(self.EncounterMapping.encounter_num).label('max')).one().max + 1
-        except TypeError:
-            return 1
-
     def new_text_search_index(self):
         try:
             return self.db_session.query(
@@ -58,7 +46,7 @@ class Connection:
             patient_ide_source=patient_ide_source, patient_ide=patient_ide, project_id=project_id).first()
         if not patient:
             patient = self.PatientMapping(patient_ide_source=patient_ide_source, patient_ide=patient_ide,
-                                          project_id=project_id, patient_num=self.new_patient_num())
+                                          project_id=project_id)
             self.db_session.merge(patient)
             self.db_session.commit()
         return patient.patient_num
@@ -71,8 +59,7 @@ class Connection:
         if not visit:
             visit = self.EncounterMapping(encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide,
                                           project_id=project_id, patient_ide=patient_ide,
-                                          patient_ide_source=patient_ide_source,
-                                          encounter_num=self.new_encounter_num())
+                                          patient_ide_source=patient_ide_source)
             self.db_session.merge(visit)
             self.db_session.commit()
         return visit.encounter_num
