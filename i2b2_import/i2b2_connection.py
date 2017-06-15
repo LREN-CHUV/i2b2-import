@@ -42,27 +42,24 @@ class Connection:
 
     def get_patient_num(self, patient_ide, patient_ide_source, project_id):
         patient_ide = str(patient_ide)
-        patient = self.db_session.query(self.PatientMapping).filter_by(
-            patient_ide_source=patient_ide_source, patient_ide=patient_ide, project_id=project_id).first()
-        if not patient:
-            patient = self.PatientMapping(patient_ide_source=patient_ide_source, patient_ide=patient_ide,
-                                          project_id=project_id)
-            self.db_session.merge(patient)
-            self.db_session.commit()
-        return patient.patient_num
+        patient = self.PatientMapping(patient_ide_source=patient_ide_source, patient_ide=patient_ide,
+                                      project_id=project_id)
+        self.db_session.merge(patient)
+        self.db_session.commit()
+        return self.db_session.query(self.PatientMapping)\
+            .filter_by(patient_ide=patient_ide, patient_ide_source=patient_ide_source, project_id=project_id)\
+            .first().patient_num
 
     def get_encounter_num(self, encounter_ide, encounter_ide_source, project_id, patient_ide, patient_ide_source):
         encounter_ide = str(encounter_ide)
-        visit = self.db_session.query(self.EncounterMapping).filter_by(
-            encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide, project_id=project_id,
-            patient_ide=patient_ide, patient_ide_source=patient_ide_source).first()
-        if not visit:
-            visit = self.EncounterMapping(encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide,
-                                          project_id=project_id, patient_ide=patient_ide,
-                                          patient_ide_source=patient_ide_source)
-            self.db_session.merge(visit)
-            self.db_session.commit()
-        return visit.encounter_num
+        visit = self.EncounterMapping(encounter_ide_source=encounter_ide_source, encounter_ide=encounter_ide,
+                                      project_id=project_id, patient_ide=patient_ide,
+                                      patient_ide_source=patient_ide_source)
+        self.db_session.merge(visit)
+        self.db_session.commit()
+        return self.db_session.query(self.EncounterMapping)\
+            .filter_by(patient_ide=patient_ide, patient_ide_source=patient_ide_source, project_id=project_id)\
+            .first().encounter_num
 
     def save_observation(self, encounter_num, concept_cd, provider_id, start_date, patient_num, valtype_cd, tval_char,
                          nval_num):
