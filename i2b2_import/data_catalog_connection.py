@@ -53,7 +53,8 @@ class Connection:
                                                   participant_id=self.new_participant_id())
             self.db_session.merge(participant)
             self.db_session.commit()
-        return participant.participant_id
+        return self.db_session.query(self.ParticipantMapping).filter_by(
+            dataset=dataset, name=participant_name).one_or_none().participant_id
 
     def new_visit_id(self):
         try:
@@ -74,8 +75,8 @@ class Connection:
             visit = self.VisitMapping(dataset=dataset, name=visit_name, visit_id=self.new_visit_id())
             self.db_session.merge(visit)
             self.db_session.commit()
-        logging.debug("returning visit_id "+str(visit.visit_id))
-        return visit.visit_id
+        return self.db_session.query(self.VisitMapping).filter_by(
+            dataset=dataset, name=visit_name).one_or_none().visit_id
 
     def get_session_id(self, session_name, visit_id):
         session_name = str(session_name)
@@ -85,7 +86,8 @@ class Connection:
             session = self.Session(name=session_name, visit_id=visit_id)
             self.db_session.merge(session)
             self.db_session.commit()
-        return session.id
+        return self.db_session.query(self.Session).filter_by(
+            name=session_name, visit_id=visit_id).one_or_none().id
 
     def get_sequence_id(self, sequence_name, session_id):
         sequence_name = str(sequence_name)
@@ -95,7 +97,8 @@ class Connection:
             sequence = self.Sequence(name=sequence_name, session_id=session_id)
             self.db_session.merge(sequence)
             self.db_session.commit()
-        return sequence.id
+        return self.db_session.query(self.Sequence).filter_by(
+            name=sequence_name, session_id=session_id).one_or_none().id
 
     def get_repetition_id(self, repetition_name, sequence_id):
         repetition_name = str(repetition_name)
@@ -105,7 +108,8 @@ class Connection:
             repetition = self.Repetition(name=repetition_name, sequence_id=sequence_id)
             self.db_session.merge(repetition)
             self.db_session.commit()
-        return repetition.id
+        return self.db_session.query(self.Repetition).filter_by(
+            name=repetition_name, sequence_id=sequence_id).one_or_none().id
 
     def get_patient_map(self, patient_id):
         patient_map = self.db_session.query(self.ParticipantMapping).filter_by(participant_id=patient_id).one_or_none()
