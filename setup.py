@@ -21,7 +21,7 @@ setup(
     extras_require={
         'test': ['unittest', 'nose'],
     },
-    install_requires=['apache-airflow>=1.8.1',
+    install_requires=['apache-airflow==1.8.2',
                       'SQLAlchemy>=1.1.6',
                       'psycopg2>=2.7.1',
                       'pandas',
