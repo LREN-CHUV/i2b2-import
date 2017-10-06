@@ -5,9 +5,9 @@ jobs:
   build:
     working_directory: ~/src
     docker:
-      - image: hbpmip/docker-compose-for-ci:17.06-0
+      - image: hbpmip/airflow-test-py35:1.8.2-2
     environment:
-       - CIRCLECI: true
+      - CIRCLECI: true
     steps:
       - setup_remote_docker:
           version: 17.06.0-ce
