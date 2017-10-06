@@ -4,7 +4,11 @@
 
 ## Introduction
 
-This library provides functions to import data into an I2B2 DB schema.
+This library provides functions to import MRI features and metadata into an I2B2 DB schema.
+
+MRI features are CSV files containing the features such as volumes of white matter and gray matter computed by the [MRI preprocessing pipeline](https://github.com/HBPMedical/mri-preprocessing-pipeline).
+
+MRI metadata are stored into the [Data Catalog database](https://github.com/HBPMedical/data-catalog-setup) and usually come from DICOM file headers but also XML or JSON files, depending on the organisation of the incoming MRI scans.
 
 ## Installation
 
