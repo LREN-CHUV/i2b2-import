@@ -16,11 +16,23 @@ get_script_dir () {
 
 cd "$(get_script_dir)"
 
-if [ "$CIRCLECI" = true ] || groups $USER | grep &>/dev/null '\bdocker\b'; then
+if [[ $NO_SUDO || -n "$CIRCLECI" ]]; then
+  DOCKER_COMPOSE="docker-compose"
+elif groups $USER | grep &>/dev/null '\bdocker\b'; then
   DOCKER_COMPOSE="docker-compose"
 else
   DOCKER_COMPOSE="sudo docker-compose"
 fi
+
+function _cleanup() {
+  local error_code="$?"
+  echo "Stopping the containers..."
+  $DOCKER_COMPOSE stop | true
+  $DOCKER_COMPOSE down | true
+  $DOCKER_COMPOSE rm -f > /dev/null 2> /dev/null | true
+  exit $error_code
+}
+trap _cleanup EXIT INT TERM
 
 $DOCKER_COMPOSE up -d db
 $DOCKER_COMPOSE run wait_dbs
@@ -48,6 +60,4 @@ echo "Run the tests for Python 3.5"
 $DOCKER_COMPOSE run python35_tests
 
 # Cleanup
-echo
-$DOCKER_COMPOSE stop
-$DOCKER_COMPOSE rm -f > /dev/null 2> /dev/null
+_cleanup
