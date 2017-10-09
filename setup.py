@@ -22,7 +22,7 @@ setup(
         'test': ['unittest', 'nose'],
     },
     install_requires=['apache-airflow==1.8.2',
-                      'SQLAlchemy>=1.1.6',
+                      'sqlalchemy>=1.1.9',
                       'psycopg2>=2.7.1',
                       'pandas',
                       'defusedxml',
