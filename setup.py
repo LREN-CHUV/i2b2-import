@@ -23,7 +23,7 @@ setup(
     },
     install_requires=['apache-airflow==1.8.2',
                       'sqlalchemy>=1.1.9',
-                      'psycopg2>=2.7.1',
+                      'psycopg2>=2.7.3',
                       'pandas',
                       'defusedxml',
                       'xlrd'],
