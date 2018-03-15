@@ -44,7 +44,7 @@ services:
       - "db:db"
 
   i2b2_setup:
-    image: "hbpmip/i2b2-setup:1.5.0"
+    image: "hbpmip/i2b2-setup:1.5.2"
     container_name: "i2b2-setup"
     command: upgrade head
     environment:
